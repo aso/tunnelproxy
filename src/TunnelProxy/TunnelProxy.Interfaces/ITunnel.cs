@@ -5,9 +5,19 @@ using System.Text;
 
 namespace TunnelProxy.Interfaces
 {
+	public class DataReceivedEventArgs:EventArgs
+	{
+		public byte[] Data { get; set; }
+
+		public DataReceivedEventArgs(byte[] data)
+		{
+			Data = data;
+		}
+	}
+
 	public interface ITunnel
 	{
 		void Send(byte[] data);
-		byte[] Receive();
+		event EventHandler<DataReceivedEventArgs> DataReceived;
 	}
 }
