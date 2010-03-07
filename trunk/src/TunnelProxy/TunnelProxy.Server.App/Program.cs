@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using TunnelProxy.Interfaces;
 using TunnelProxy.Tunnels;
+using TunnelProxy.Util;
 
 
 namespace TunnelProxy.Server.App
@@ -35,12 +36,12 @@ namespace TunnelProxy.Server.App
 		static void Tunnel_DataReceived(object sender, DataReceivedEventArgs e)
 		{
 			byte[] data = e.Data;
-			string request = System.Text.Encoding.UTF8.GetString(data);
+			string request = ConversionUtils.ConvertToString(data);
 
 			Console.WriteLine(request);
 
 			string response = "Got the message";
-			byte[] responseData = System.Text.Encoding.UTF8.GetBytes(response);
+			byte[] responseData = ConversionUtils.ConvertToBytes(response);
 
 
 			Tunnel.Send(responseData);
