@@ -5,6 +5,8 @@ using System.Text;
 using TunnelProxy.Interfaces;
 using TunnelProxy.Tunnels;
 using TunnelProxy.Util;
+using System.Net;
+using System.IO;
 
 
 namespace TunnelProxy.Server.App
@@ -26,9 +28,9 @@ namespace TunnelProxy.Server.App
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message + "\n"  + ex.StackTrace);
+				Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
 			}
-			
+
 			Console.ReadLine();
 
 		}
@@ -38,13 +40,39 @@ namespace TunnelProxy.Server.App
 			byte[] data = e.Data;
 			string request = ConversionUtils.ConvertToString(data);
 
-			Console.WriteLine(request);
+			Console.WriteLine("Got message: " + request);
 
-			string response = "Got the message";
-			byte[] responseData = ConversionUtils.ConvertToBytes(response);
+			byte[] responseData = GetHttpData(request);
+
+			//string response = "Got the message";
+			//byte[] responseData = ConversionUtils.ConvertToBytes(response);
 
 
 			Tunnel.Send(responseData);
+		}
+
+		static byte[] GetHttpData(string address)
+		{
+			byte[] results;
+			Stream responseStream = null;
+			try
+			{
+
+				Uri uri = new Uri(address);
+				HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+
+				HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+				responseStream = response.GetResponseStream();
+				results = StreamUtils.ReadAllBytes(responseStream);
+			}
+			finally
+			{
+				if (responseStream != null)
+					responseStream.Close();
+			}
+			return results;
+
+			
 		}
 	}
 }
