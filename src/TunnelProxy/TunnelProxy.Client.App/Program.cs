@@ -17,6 +17,9 @@ namespace TunnelProxy.Client.App
 			//put in for testing purposes
 			//todo: replace with actually implementation
 
+			Console.WriteLine("Client started");
+			Console.WriteLine("Enter Address to request data from");
+
 			Tunnel = new HttpTunnel(new Uri("http://localhost:8080"), "POST");
 			Tunnel.DataReceived += new EventHandler<DataReceivedEventArgs>(Tunnel_DataReceived);
 
