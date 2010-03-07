@@ -55,6 +55,10 @@
       <Project>{65ED19FF-B922-4E84-89EA-0667DC612F9E}</Project>
       <Name>TunnelProxy.Interfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TunnelProxy.Util\TunnelProxy.Util.csproj">
+      <Project>{F909BF11-D812-4D0C-AD8B-83C6B8F588FE}</Project>
+      <Name>TunnelProxy.Util</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

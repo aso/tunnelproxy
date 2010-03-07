@@ -5,6 +5,7 @@ using System.Text;
 using TunnelProxy.Interfaces;
 using System.Net;
 using System.IO;
+using TunnelProxy.Util;
 
 namespace TunnelProxy.Tunnels
 {
@@ -25,7 +26,6 @@ namespace TunnelProxy.Tunnels
 		{
 			WebResponse response = null;
 			Stream dataStream = null;
-			StreamReader reader = null;
 			try
 			{
 				WebRequest request = WebRequest.Create(Address);
@@ -39,13 +39,8 @@ namespace TunnelProxy.Tunnels
 				response = request.GetResponse();
 				dataStream = response.GetResponseStream();
 
-				reader = new StreamReader(dataStream);
-				string responseString = reader.ReadToEnd();
-				byte[] results = System.Text.Encoding.UTF8.GetBytes(responseString);
+				byte[] results = StreamUtils.ReadAllBytes(dataStream);
 
-				//byte[] results = new byte[dataStream.Length - 1];
-
-				//dataStream.Read(results, 0, results.Length);
 				if (DataReceived != null)
 					DataReceived(this, new DataReceivedEventArgs(results));
 

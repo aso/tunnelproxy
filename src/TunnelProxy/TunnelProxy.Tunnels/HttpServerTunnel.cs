@@ -5,6 +5,7 @@ using System.Text;
 using TunnelProxy.Interfaces;
 using System.Net;
 using System.IO;
+using TunnelProxy.Util;
 
 namespace TunnelProxy.Tunnels
 {
@@ -27,15 +28,11 @@ namespace TunnelProxy.Tunnels
 		private void GetContextCallBack(IAsyncResult result)
 		{
 			Stream inputStream = null;
-			StreamReader reader = null;
 			try
 			{
 				_tempContext = _httpListener.EndGetContext(result);
 				inputStream = _tempContext.Request.InputStream;
-				reader = new StreamReader(inputStream);
-				string request = reader.ReadToEnd();
-				byte[] data = System.Text.Encoding.UTF8.GetBytes(request);
-				//inputStream.Read(data, 0, data.Length);
+				byte[] data = StreamUtils.ReadAllBytes(inputStream);
 				if (DataReceived != null)
 					DataReceived(this, new DataReceivedEventArgs(data));
 
@@ -44,8 +41,6 @@ namespace TunnelProxy.Tunnels
 			{
 				if (inputStream != null)
 					inputStream.Close();
-				if(reader!=null)
-					reader.Close();
 			}
 		}
 

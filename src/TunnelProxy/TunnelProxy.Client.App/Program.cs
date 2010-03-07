@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using TunnelProxy.Interfaces;
 using TunnelProxy.Tunnels;
+using TunnelProxy.Util;
 
 namespace TunnelProxy.Client.App
 {
@@ -22,7 +23,7 @@ namespace TunnelProxy.Client.App
 			while (true)
 			{
 				string request = Console.ReadLine();
-				byte[] data = System.Text.Encoding.UTF8.GetBytes(request);
+				byte[] data = ConversionUtils.ConvertToBytes(request);
 				Tunnel.Send(data);
 			}
 
@@ -31,7 +32,7 @@ namespace TunnelProxy.Client.App
 		static void Tunnel_DataReceived(object sender, DataReceivedEventArgs e)
 		{
 			byte[] data = e.Data;
-			string response = System.Text.Encoding.UTF8.GetString(data);
+			string response = ConversionUtils.ConvertToString(data);
 
 			Console.WriteLine("Response from Server: " + response);
 		}

@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{B28E21B5-4835-431A-9278-F09E2AB185DB}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{F909BF11-D812-4D0C-AD8B-83C6B8F588FE}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TunnelProxy.Server.App</RootNamespace>
-    <AssemblyName>TunnelProxy.Server.App</AssemblyName>
+    <RootNamespace>TunnelProxy.Util</RootNamespace>
+    <AssemblyName>TunnelProxy.Util</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -45,22 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="ConversionUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TunnelProxy.Interfaces\TunnelProxy.Interfaces.csproj">
-      <Project>{65ED19FF-B922-4E84-89EA-0667DC612F9E}</Project>
-      <Name>TunnelProxy.Interfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TunnelProxy.Tunnels\TunnelProxy.Tunnels.csproj">
-      <Project>{EEF54371-58BC-4B90-A2EC-72FC44C217C2}</Project>
-      <Name>TunnelProxy.Tunnels</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TunnelProxy.Util\TunnelProxy.Util.csproj">
-      <Project>{F909BF11-D812-4D0C-AD8B-83C6B8F588FE}</Project>
-      <Name>TunnelProxy.Util</Name>
-    </ProjectReference>
+    <Compile Include="StreamUtils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
