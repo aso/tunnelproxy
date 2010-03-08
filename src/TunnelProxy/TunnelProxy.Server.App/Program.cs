@@ -24,7 +24,12 @@ namespace TunnelProxy.Server.App
 			{
 				Console.WriteLine("Server Running...\nPress Enter to Quit.");
 				Tunnel = new HttpServerTunnel("http://+:8080/");
-				Tunnel.DataReceived += new EventHandler<DataReceivedEventArgs>(Tunnel_DataReceived);
+
+
+				//Tunnel.DataReceived += new EventHandler<DataReceivedEventArgs>(Tunnel_DataReceived);
+
+                HttpProxyHandler handler = new HttpProxyHandler(Tunnel);
+
 			}
 			catch (Exception ex)
 			{
