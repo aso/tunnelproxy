@@ -21,14 +21,24 @@ namespace TunnelProxy.Client.App
 			Console.WriteLine("Enter Address to request data from");
 
 			Tunnel = new HttpTunnel(new Uri("http://localhost:8080"), "POST");
-			Tunnel.DataReceived += new EventHandler<DataReceivedEventArgs>(Tunnel_DataReceived);
 
+
+			//Tunnel.DataReceived += new EventHandler<DataReceivedEventArgs>(Tunnel_DataReceived);
+
+            SocketClient client = new SocketClient(Tunnel);
+
+            while (true)
+            {
+                client.HandleMessages();
+            }
+            
 			while (true)
 			{
 				string request = Console.ReadLine();
 				byte[] data = ConversionUtils.ConvertToBytes(request);
 				Tunnel.Send(data);
 			}
+            
 
 		}
 
