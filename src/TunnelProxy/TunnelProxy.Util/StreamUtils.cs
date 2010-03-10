@@ -10,14 +10,17 @@ namespace TunnelProxy.Util
 	{
 		public static byte[] ReadAllBytes(Stream stream)
 		{
-			StreamReader reader = null;
-			byte[] results;
+			BinaryReader reader = null;
+			byte[] results = new byte[0];
 			try
 			{
-				reader = new StreamReader(stream);
-				string responseString = reader.ReadToEnd();
-				results = ConversionUtils.ConvertToBytes(responseString);
-			}
+				reader = new BinaryReader(stream);
+				//string responseString = reader.ReadToEnd();
+				//results = ConversionUtils.ConvertToBytes(responseString);
+
+                
+                results = reader.ReadBytes(1000000);
+            }
 			finally
 			{
 				if (reader != null)
