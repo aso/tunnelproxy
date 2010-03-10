@@ -5,6 +5,7 @@ using System.Text;
 using TunnelProxy.Interfaces;
 using System.Net;
 using System.Net.Sockets;
+using TunnelProxy.Util;
 
 namespace TunnelProxy.Client.App
 {
@@ -16,12 +17,12 @@ namespace TunnelProxy.Client.App
 
             this.Tunnel = Tunnel;
             //Register DataReceived handler with the tunnel
-            Tunnel.DataReceived += new EventHandler<DataReceivedEventArgs>(SocketClient_DataReceived);
+            Tunnel.DataReceived += new EventHandler<DataReceivedEventArgs>(Tunnel_DataReceived);
 
             //open server socket
 
             Int32 port = 13000;
-            IPAddress localAddr = IPAddress.Parse("127.0.0.1");
+            IPAddress localAddr = IPAddress.Parse("192.168.1.102");
 
             tcpListener = new TcpListener(localAddr, port);
             tcpListener.Start();
@@ -30,29 +31,35 @@ namespace TunnelProxy.Client.App
         public void HandleMessages()
         {
             int i;
-            Byte[] bytes = new Byte[1024];
+            Byte[] temp = new Byte[10240];
+            Byte[] bytes;
 
             //Wait for new connection
             client = tcpListener.AcceptTcpClient();
             networkStream = client.GetStream();
 
             // Loop to receive all the data sent by the client.
-            while ((i = networkStream.Read(bytes, 0, bytes.Length)) != 0)
-            {
-                // Send through Tunnel
-                System.Console.WriteLine(Encoding.UTF8.GetString(bytes));
+            while (client.Connected)
+            {    
+                i = networkStream.Read(temp, 0, temp.Length);
+                bytes = new byte[i];
+                Array.Copy(temp, 0, bytes, 0, i);
+
+                System.Console.WriteLine("--->Sent {0} bytes to server", bytes.Length);
+                System.Console.WriteLine(ConversionUtils.ConvertToString(bytes));
                 Tunnel.Send(bytes);
+
             }
 
             // Shutdown and end connection
             client.Close();
         }
 
-        void SocketClient_DataReceived(object sender, DataReceivedEventArgs e)
+        void Tunnel_DataReceived(object sender, DataReceivedEventArgs e)
 		{
 			byte[] data = e.Data;
-            System.Console.WriteLine("Got Some Data from server");
-            networkStream.Write(data, 0, data.Length);
+            System.Console.WriteLine("<---Recvd {0} bytes from server", data.Length);
+            networkStream.Write(data, 2, data.Length - 2);
 		}
 
         //Member Objects
