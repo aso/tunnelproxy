@@ -5,6 +5,7 @@ using System.Text;
 using TunnelProxy.Interfaces;
 using System.Net;
 using System.IO;
+using System.Threading;
 using TunnelProxy.Util;
 
 namespace TunnelProxy.Tunnels
@@ -17,7 +18,6 @@ namespace TunnelProxy.Tunnels
 		public HttpServerTunnel(string prefix)
 		{
 			_httpListener.Prefixes.Add(prefix);
-
 
 			_httpListener.Start();
 
@@ -32,9 +32,21 @@ namespace TunnelProxy.Tunnels
 			{
 				_tempContext = _httpListener.EndGetContext(result);
 				inputStream = _tempContext.Request.InputStream;
-				byte[] data = StreamUtils.ReadAllBytes(inputStream);
-				if (DataReceived != null)
-					DataReceived(this, new DataReceivedEventArgs(data));
+				byte[] temp = StreamUtils.ReadAllBytes(inputStream);
+
+                if (DataReceived != null && temp.Length > 2)
+                {
+                    byte[] data = new byte[temp.Length - 2];
+                    Array.Copy(temp, 2, data, 0, data.Length);
+                    DataReceived(this, new DataReceivedEventArgs(data));
+                }
+                else
+                {
+                    byte[] data = new byte[2];
+                    Send(data);
+                }
+
+                waiting = false;
 
 			}
 			finally
@@ -52,6 +64,10 @@ namespace TunnelProxy.Tunnels
 			Stream dataStream = null;
 			try
 			{
+                while(waiting) Thread.Sleep(1);
+
+                waiting = true;
+
 				response = _tempContext.Response;
 				response.ContentLength64 = data.Length;
 				dataStream = response.OutputStream;
@@ -73,6 +89,7 @@ namespace TunnelProxy.Tunnels
 
 		#endregion
 
+        bool waiting = false;
 
 	}
 }

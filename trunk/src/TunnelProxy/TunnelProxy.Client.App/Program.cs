@@ -5,6 +5,9 @@ using System.Text;
 using TunnelProxy.Interfaces;
 using TunnelProxy.Tunnels;
 using TunnelProxy.Util;
+using System.Net;
+using System.Net.Sockets;
+using System.Threading;
 
 namespace TunnelProxy.Client.App
 {
@@ -20,16 +23,28 @@ namespace TunnelProxy.Client.App
 			Console.WriteLine("Client started");
 			Console.WriteLine("Enter Address to request data from");
 
-			Tunnel = new HttpTunnel(new Uri("http://localhost:8080"), "POST");
+
 
 
 			//Tunnel.DataReceived += new EventHandler<DataReceivedEventArgs>(Tunnel_DataReceived);
+            Int32 port = 13000;
+            IPAddress localAddr = IPAddress.Parse("127.0.0.1");
 
-            SocketClient client = new SocketClient(Tunnel);
+            //open server socket
+            TcpListener tcpListener = new TcpListener(localAddr, port);
+            tcpListener.Start();
+
+            //create the Tunnel
+            Tunnel = new HttpTunnel(new Uri("http://localhost:8080"), "POST");
 
             while (true)
             {
-                client.HandleMessages();
+                //Wait for new connection
+                TcpClient tcpClient = tcpListener.AcceptTcpClient();
+
+                SocketClient sclient = new SocketClient(Tunnel, tcpClient);
+
+                sclient.HandleMessages();
             }
             
 			while (true)

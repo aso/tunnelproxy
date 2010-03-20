@@ -23,7 +23,7 @@ namespace TunnelProxy.Server.App
             int i;
             int totalSize = 2;
             byte[] data = e.Data;
-            byte[] buffer = new Byte[10240];
+            byte[] buffer = new Byte[1024];
             byte[] respData = new Byte[2];
             byte[] tempData;
             
@@ -32,56 +32,57 @@ namespace TunnelProxy.Server.App
 
             //print data for debugging
             string request = System.Text.Encoding.UTF8.GetString(data);
+
+
+            if (client == null || !client.Connected)
+            {
+                if(request.Contains("Host") != false)
+                   ConnectToHost(request);
+                else
+                {
+                   Tunnel.Send(respData);
+                   return;
+                }
+            }
+
             System.Console.WriteLine("--->Recvd {0} bytes from client", data.Length);
-
-
-
-            if (!continued) ConnectToHost(request);
-
-
             System.Console.WriteLine(ConversionUtils.ConvertToString(data));
             NetworkStream networkStream = client.GetStream();
-            networkStream.Write(data, 0, data.Length);
-           
-            // Shutdown and end connection
-            if (request.Contains("\r\n\r\n"))
-            {
-                continued = false;
-                
+
+            if (data.Length > 2)
+            {  
+                networkStream.Write(data, 0, data.Length);
                 System.Console.WriteLine("<--->waiting for response");
-                // Loop to receive all the data sent by the client.            
-                //while ((i = networkStream.Read(buffer, 0, buffer.Length)) != 0)
-                i = networkStream.Read(buffer, 0, buffer.Length);
+            }
+
+                try
                 {
-                    System.Console.WriteLine("Read Resp: {0}", i);
-                    tempData = new Byte[totalSize + i];
+                    if (networkStream.DataAvailable)//while (totalSize < dataLength)
+                    {
+                        i = networkStream.Read(buffer, 0, buffer.Length);
+                        System.Console.WriteLine("Read Resp: {0}", i);
+                        tempData = new Byte[totalSize + i];
 
-                    Array.Copy(respData, 0, tempData, 0, totalSize);
-                    Array.Copy(buffer, 0, tempData, totalSize, i);
+                        Array.Copy(respData, 0, tempData, 0, totalSize);
+                        Array.Copy(buffer, 0, tempData, totalSize, i);
 
-                    respData = tempData;
-                    totalSize += i;
+                        respData = tempData;
+                        totalSize += i;
+                    }
+                }
+                catch (Exception except)
+                {
+                    Console.WriteLine("Error: {0}", except.Message);
                 }
 
-                System.Console.WriteLine("Got Resp");
                 System.Console.WriteLine("--->Sent {0} bytes to client", respData.Length);
                 Tunnel.Send(respData);
-
-                client.Close();
-            }
-            else
-            {
-                System.Console.WriteLine("<--->partial request, waiting for more");
-                Tunnel.Send(respData);
-                continued = true;
-            }
-
         }
 
         void ConnectToHost(string request)
         {
             StringReader reader = new StringReader(request);
-            string server;
+            string server;            
 
             string line = reader.ReadLine();
 
@@ -99,6 +100,6 @@ namespace TunnelProxy.Server.App
         //Member Objects
         ITunnel Tunnel;
         Boolean continued = false;
-        TcpClient client;
+        TcpClient client = null;
     }
 }
