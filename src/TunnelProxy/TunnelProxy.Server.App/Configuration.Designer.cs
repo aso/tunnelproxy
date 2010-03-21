@@ -1,4 +1,4 @@
-﻿namespace TunnelProxy.Server.GUI
+﻿namespace TunnelProxy.Server.App
 {
 	partial class Configuration
 	{
@@ -43,15 +43,20 @@
 			this.txtTwitterServerPassword = new System.Windows.Forms.TextBox();
 			this.txtServerUserName = new System.Windows.Forms.TextBox();
 			this.lblTwitterClientUserName = new System.Windows.Forms.Label();
-			this.btnSave = new System.Windows.Forms.Button();
+			this.btnStart = new System.Windows.Forms.Button();
 			this.cbCommunicationType = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
+			this.txtUrl = new System.Windows.Forms.TextBox();
+			this.lstMessages = new System.Windows.Forms.ListBox();
+			this.lblUrl = new System.Windows.Forms.Label();
 			this.pnlHtml.SuspendLayout();
 			this.pnlTwitter.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// pnlHtml
 			// 
+			this.pnlHtml.Controls.Add(this.lblUrl);
+			this.pnlHtml.Controls.Add(this.txtUrl);
 			this.pnlHtml.Controls.Add(this.txtIPAddr);
 			this.pnlHtml.Controls.Add(this.lblIP);
 			this.pnlHtml.Controls.Add(this.rbUrl);
@@ -184,14 +189,15 @@
 			this.lblTwitterClientUserName.TabIndex = 17;
 			this.lblTwitterClientUserName.Text = "Client User Name:";
 			// 
-			// btnSave
+			// btnStart
 			// 
-			this.btnSave.Location = new System.Drawing.Point(15, 169);
-			this.btnSave.Name = "btnSave";
-			this.btnSave.Size = new System.Drawing.Size(75, 23);
-			this.btnSave.TabIndex = 22;
-			this.btnSave.Text = "Save";
-			this.btnSave.UseVisualStyleBackColor = true;
+			this.btnStart.Location = new System.Drawing.Point(15, 169);
+			this.btnStart.Name = "btnStart";
+			this.btnStart.Size = new System.Drawing.Size(75, 23);
+			this.btnStart.TabIndex = 22;
+			this.btnStart.Text = "Start";
+			this.btnStart.UseVisualStyleBackColor = true;
+			this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
 			// 
 			// cbCommunicationType
 			// 
@@ -217,14 +223,41 @@
 			this.label1.TabIndex = 20;
 			this.label1.Text = "Communication Type:";
 			// 
+			// txtUrl
+			// 
+			this.txtUrl.Location = new System.Drawing.Point(113, 32);
+			this.txtUrl.Name = "txtUrl";
+			this.txtUrl.Size = new System.Drawing.Size(100, 20);
+			this.txtUrl.TabIndex = 9;
+			this.txtUrl.Text = "http://+:8080/";
+			// 
+			// lstMessages
+			// 
+			this.lstMessages.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.lstMessages.FormattingEnabled = true;
+			this.lstMessages.Location = new System.Drawing.Point(0, 256);
+			this.lstMessages.Name = "lstMessages";
+			this.lstMessages.Size = new System.Drawing.Size(438, 225);
+			this.lstMessages.TabIndex = 25;
+			// 
+			// lblUrl
+			// 
+			this.lblUrl.AutoSize = true;
+			this.lblUrl.Location = new System.Drawing.Point(4, 32);
+			this.lblUrl.Name = "lblUrl";
+			this.lblUrl.Size = new System.Drawing.Size(29, 13);
+			this.lblUrl.TabIndex = 9;
+			this.lblUrl.Text = "URL";
+			// 
 			// Configuration
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(410, 262);
+			this.ClientSize = new System.Drawing.Size(438, 481);
+			this.Controls.Add(this.lstMessages);
 			this.Controls.Add(this.pnlHtml);
 			this.Controls.Add(this.pnlTwitter);
-			this.Controls.Add(this.btnSave);
+			this.Controls.Add(this.btnStart);
 			this.Controls.Add(this.cbCommunicationType);
 			this.Controls.Add(this.label1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -255,9 +288,12 @@
 		private System.Windows.Forms.TextBox txtTwitterServerPassword;
 		private System.Windows.Forms.TextBox txtServerUserName;
 		private System.Windows.Forms.Label lblTwitterClientUserName;
-		private System.Windows.Forms.Button btnSave;
+		private System.Windows.Forms.Button btnStart;
 		private System.Windows.Forms.ComboBox cbCommunicationType;
 		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.TextBox txtUrl;
+		private System.Windows.Forms.Label lblUrl;
+		private System.Windows.Forms.ListBox lstMessages;
 	}
 }
 
