@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TunnelProxy.Client.GUI", "TunnelProxy.Client.GUI\TunnelProxy.Client.GUI.csproj", "{28ECF22C-E43B-4742-AF62-8489EAC64F94}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TunnelProxy.Client.App", "TunnelProxy.Client.App\TunnelProxy.Client.App.csproj", "{6F4208B9-AE5A-4D10-B6EA-2B92680BF949}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TunnelProxy.Server.App", "TunnelProxy.Server.App\TunnelProxy.Server.App.csproj", "{B28E21B5-4835-431A-9278-F09E2AB185DB}"
@@ -21,10 +19,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{28ECF22C-E43B-4742-AF62-8489EAC64F94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{28ECF22C-E43B-4742-AF62-8489EAC64F94}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{28ECF22C-E43B-4742-AF62-8489EAC64F94}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{28ECF22C-E43B-4742-AF62-8489EAC64F94}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6F4208B9-AE5A-4D10-B6EA-2B92680BF949}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6F4208B9-AE5A-4D10-B6EA-2B92680BF949}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F4208B9-AE5A-4D10-B6EA-2B92680BF949}.Release|Any CPU.ActiveCfg = Release|Any CPU

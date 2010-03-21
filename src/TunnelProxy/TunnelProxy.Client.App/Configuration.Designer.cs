@@ -1,4 +1,4 @@
-﻿namespace TunnelProxy.Client.GUI
+﻿namespace TunnelProxy.Client.App
 {
 	partial class Configuration
 	{
@@ -39,7 +39,7 @@
 			this.rbUrl = new System.Windows.Forms.RadioButton();
 			this.txtUrl = new System.Windows.Forms.TextBox();
 			this.lblUrl = new System.Windows.Forms.Label();
-			this.btnSave = new System.Windows.Forms.Button();
+			this.btnStart = new System.Windows.Forms.Button();
 			this.txtClientUserName = new System.Windows.Forms.TextBox();
 			this.lblTwitterClientUserName = new System.Windows.Forms.Label();
 			this.txtTwitterClientPassword = new System.Windows.Forms.TextBox();
@@ -48,6 +48,11 @@
 			this.lblTwitterServerUserName = new System.Windows.Forms.Label();
 			this.pnlTwitter = new System.Windows.Forms.Panel();
 			this.pnlHtml = new System.Windows.Forms.Panel();
+			this.lstMessages = new System.Windows.Forms.ListBox();
+			this.label2 = new System.Windows.Forms.Label();
+			this.label3 = new System.Windows.Forms.Label();
+			this.txtLocalPort = new System.Windows.Forms.TextBox();
+			this.txtLocalIPAddr = new System.Windows.Forms.MaskedTextBox();
 			this.pnlTwitter.SuspendLayout();
 			this.pnlHtml.SuspendLayout();
 			this.SuspendLayout();
@@ -143,6 +148,7 @@
 			this.txtUrl.Name = "txtUrl";
 			this.txtUrl.Size = new System.Drawing.Size(151, 20);
 			this.txtUrl.TabIndex = 9;
+			this.txtUrl.Text = "http://localhost:8080";
 			// 
 			// lblUrl
 			// 
@@ -153,14 +159,15 @@
 			this.lblUrl.TabIndex = 10;
 			this.lblUrl.Text = "URL";
 			// 
-			// btnSave
+			// btnStart
 			// 
-			this.btnSave.Location = new System.Drawing.Point(16, 184);
-			this.btnSave.Name = "btnSave";
-			this.btnSave.Size = new System.Drawing.Size(75, 23);
-			this.btnSave.TabIndex = 11;
-			this.btnSave.Text = "Save";
-			this.btnSave.UseVisualStyleBackColor = true;
+			this.btnStart.Location = new System.Drawing.Point(16, 184);
+			this.btnStart.Name = "btnStart";
+			this.btnStart.Size = new System.Drawing.Size(75, 23);
+			this.btnStart.TabIndex = 11;
+			this.btnStart.Text = "Start";
+			this.btnStart.UseVisualStyleBackColor = true;
+			this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
 			// 
 			// txtClientUserName
 			// 
@@ -238,14 +245,63 @@
 			this.pnlHtml.Size = new System.Drawing.Size(282, 99);
 			this.pnlHtml.TabIndex = 19;
 			// 
+			// lstMessages
+			// 
+			this.lstMessages.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.lstMessages.FormattingEnabled = true;
+			this.lstMessages.Location = new System.Drawing.Point(0, 231);
+			this.lstMessages.Name = "lstMessages";
+			this.lstMessages.Size = new System.Drawing.Size(614, 186);
+			this.lstMessages.TabIndex = 20;
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(317, 91);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(87, 13);
+			this.label2.TabIndex = 21;
+			this.label2.Text = "Local IP Address";
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(317, 117);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(29, 13);
+			this.label3.TabIndex = 22;
+			this.label3.Text = "Port:";
+			// 
+			// txtLocalPort
+			// 
+			this.txtLocalPort.Location = new System.Drawing.Point(429, 114);
+			this.txtLocalPort.Name = "txtLocalPort";
+			this.txtLocalPort.Size = new System.Drawing.Size(106, 20);
+			this.txtLocalPort.TabIndex = 23;
+			this.txtLocalPort.Text = "13000";
+			// 
+			// txtLocalIPAddr
+			// 
+			this.txtLocalIPAddr.Location = new System.Drawing.Point(429, 87);
+			this.txtLocalIPAddr.Mask = "000.000.000.000";
+			this.txtLocalIPAddr.Name = "txtLocalIPAddr";
+			this.txtLocalIPAddr.Size = new System.Drawing.Size(100, 20);
+			this.txtLocalIPAddr.TabIndex = 25;
+			this.txtLocalIPAddr.Text = "127000000001";
+			// 
 			// Configuration
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(360, 238);
+			this.ClientSize = new System.Drawing.Size(614, 417);
+			this.Controls.Add(this.txtLocalIPAddr);
+			this.Controls.Add(this.label2);
+			this.Controls.Add(this.label3);
+			this.Controls.Add(this.txtLocalPort);
+			this.Controls.Add(this.lstMessages);
 			this.Controls.Add(this.pnlHtml);
 			this.Controls.Add(this.pnlTwitter);
-			this.Controls.Add(this.btnSave);
+			this.Controls.Add(this.btnStart);
 			this.Controls.Add(this.cbCommunicationType);
 			this.Controls.Add(this.label1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -273,7 +329,7 @@
 		private System.Windows.Forms.RadioButton rbUrl;
 		private System.Windows.Forms.TextBox txtUrl;
 		private System.Windows.Forms.Label lblUrl;
-		private System.Windows.Forms.Button btnSave;
+		private System.Windows.Forms.Button btnStart;
 		private System.Windows.Forms.TextBox txtClientUserName;
 		private System.Windows.Forms.Label lblTwitterClientUserName;
 		private System.Windows.Forms.TextBox txtTwitterClientPassword;
@@ -282,6 +338,11 @@
 		private System.Windows.Forms.Label lblTwitterServerUserName;
 		private System.Windows.Forms.Panel pnlTwitter;
 		private System.Windows.Forms.Panel pnlHtml;
+		private System.Windows.Forms.ListBox lstMessages;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.TextBox txtLocalPort;
+		private System.Windows.Forms.MaskedTextBox txtLocalIPAddr;
 	}
 }
 
