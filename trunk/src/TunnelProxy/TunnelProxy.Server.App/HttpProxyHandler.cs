@@ -12,13 +12,14 @@ namespace TunnelProxy.Server.App
 {
     class HttpProxyHandler
     {
-        public HttpProxyHandler(ITunnel Tunnel)
+        public HttpProxyHandler(ITunnel tunnel, IMessageWriter messageWriter)
         {
-            this.Tunnel = Tunnel;
-            Tunnel.DataReceived += new EventHandler<DataReceivedEventArgs>(Tunnel_DataReceived);
+            _tunnel = tunnel;
+			_messageWriter = messageWriter;
+            _tunnel.DataReceived += new EventHandler<DataReceivedEventArgs>(Tunnel_DataReceived);
         }
 
-        void Tunnel_DataReceived(object sender, DataReceivedEventArgs e)
+        private void Tunnel_DataReceived(object sender, DataReceivedEventArgs e)
         {
             int i;
             int totalSize = 2;
@@ -34,25 +35,25 @@ namespace TunnelProxy.Server.App
             string request = System.Text.Encoding.UTF8.GetString(data);
 
 
-            if (client == null || !client.Connected)
+            if (_client == null || !_client.Connected)
             {
                 if(request.Contains("Host") != false)
                    ConnectToHost(request);
                 else
                 {
-                   Tunnel.Send(respData);
+                   _tunnel.Send(respData);
                    return;
                 }
             }
 
-            System.Console.WriteLine("--->Recvd {0} bytes from client", data.Length);
-            System.Console.WriteLine(ConversionUtils.ConvertToString(data));
-            NetworkStream networkStream = client.GetStream();
+            _messageWriter.WriteLine("--->Recvd {0} bytes from client", data.Length);
+            _messageWriter.WriteLine(ConversionUtils.ConvertToString(data));
+            NetworkStream networkStream = _client.GetStream();
 
             if (data.Length > 2)
             {  
                 networkStream.Write(data, 0, data.Length);
-                System.Console.WriteLine("<--->waiting for response");
+				_messageWriter.WriteLine("<--->waiting for response");
             }
 
                 try
@@ -60,7 +61,7 @@ namespace TunnelProxy.Server.App
                     if (networkStream.DataAvailable)//while (totalSize < dataLength)
                     {
                         i = networkStream.Read(buffer, 0, buffer.Length);
-                        System.Console.WriteLine("Read Resp: {0}", i);
+						_messageWriter.WriteLine("Read Resp: {0}", i);
                         tempData = new Byte[totalSize + i];
 
                         Array.Copy(respData, 0, tempData, 0, totalSize);
@@ -72,11 +73,11 @@ namespace TunnelProxy.Server.App
                 }
                 catch (Exception except)
                 {
-                    Console.WriteLine("Error: {0}", except.Message);
+					_messageWriter.WriteLine("Error: {0}", except.Message);
                 }
 
-                System.Console.WriteLine("--->Sent {0} bytes to client", respData.Length);
-                Tunnel.Send(respData);
+				_messageWriter.WriteLine("--->Sent {0} bytes to client", respData.Length);
+                _tunnel.Send(respData);
         }
 
         void ConnectToHost(string request)
@@ -93,13 +94,14 @@ namespace TunnelProxy.Server.App
 
             server = line.TrimStart("Host: ".ToCharArray());
 
-            Console.WriteLine("Connecting to: {0}", server);
-            client = new TcpClient(server, 80);
+            _messageWriter.WriteLine("Connecting to: {0}", server);
+            _client = new TcpClient(server, 80);
         }
 
         //Member Objects
-        ITunnel Tunnel;
-        Boolean continued = false;
-        TcpClient client = null;
+        private ITunnel _tunnel;
+		private IMessageWriter _messageWriter;
+        //private Boolean _continued = false;
+        private TcpClient _client = null;
     }
 }
