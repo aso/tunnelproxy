@@ -12,10 +12,11 @@ namespace TunnelProxy.Client.App
 
     class SocketClient
     {
-        public SocketClient(ITunnel Tunnel, TcpClient tcpclient)
+        public SocketClient(ITunnel Tunnel, TcpClient tcpclient, IMessageWriter messageWriter)
         {
-            this.client = tcpclient;
-            this.Tunnel = Tunnel;
+            _client = tcpclient;
+            _tunnel = Tunnel;
+			_messageWriter = messageWriter;
             //Register DataReceived handler with the tunnel
             Tunnel.DataReceived += new EventHandler<DataReceivedEventArgs>(Tunnel_DataReceived);
         }
@@ -27,40 +28,41 @@ namespace TunnelProxy.Client.App
             Byte[] bytes;
 
 
-            networkStream = client.GetStream();
+            _networkStream = _client.GetStream();
 
             // Loop to receive all the data sent by the client.
-            while (client.Connected && !disconnect)
+            while (_client.Connected && !_disconnect)
             {    
-                i = networkStream.Read(temp, 0, temp.Length);
+                i = _networkStream.Read(temp, 0, temp.Length);
 
                 if (i > 0)
                 {
                     bytes = new byte[i];
                     Array.Copy(temp, 0, bytes, 0, i);
 
-                    System.Console.WriteLine("--->Sent {0} bytes to server", bytes.Length);
-                    System.Console.WriteLine(ConversionUtils.ConvertToString(bytes));
-                    Tunnel.Send(bytes);
+                    _messageWriter.WriteLine("--->Sent {0} bytes to server", bytes.Length);
+					_messageWriter.WriteLine(ConversionUtils.ConvertToString(bytes));
+                    _tunnel.Send(bytes);
                 }
             }
 
             // Shutdown and end connection
-            client.Close();
+            _client.Close();
         }
 
         void Tunnel_DataReceived(object sender, DataReceivedEventArgs e)
 		{
 			byte[] data = e.Data;
-            System.Console.WriteLine("<---Recvd {0} bytes from server", data.Length);
-            networkStream.Write(data, 2, data.Length - 2);           
+			_messageWriter.WriteLine("<---Recvd {0} bytes from server", data.Length);
+            _networkStream.Write(data, 2, data.Length - 2);           
 		}
 
         //Member Objects
-        ITunnel Tunnel;
-        TcpClient client;
-        NetworkStream networkStream;
-        bool disconnect = false;
+		private ITunnel _tunnel;
+        private TcpClient _client;
+        private NetworkStream _networkStream;
+        private bool _disconnect = false;
+		private IMessageWriter _messageWriter;
     }
 
 

@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
+using System.Net.Sockets;
+using System.Net;
 using System.Text;
 using System.Windows.Forms;
 
-namespace TunnelProxy.Client.GUI
+using TunnelProxy.Interfaces;
+using TunnelProxy.Tunnels;
+using TunnelProxy.Util;
+using System.Threading;
+
+namespace TunnelProxy.Client.App
 {
-	public partial class Configuration : Form
+	public partial class Configuration : Form, IMessageWriter
 	{
 		public Configuration()
 		{
@@ -67,5 +71,42 @@ namespace TunnelProxy.Client.GUI
 		{
 
 		}
+
+		private void btnStart_Click(object sender, EventArgs e)
+		{
+			Thread tunnelThread = new Thread(new ThreadStart(StartTunnel));
+			tunnelThread.IsBackground = true;
+			tunnelThread.Start();
+
+			//tunnelLogic.StartTunnel(tunnel, txtLocalIPAddr.Text, Convert.ToInt32(txtLocalPort.Text));
+		}
+
+		private void StartTunnel()
+		{
+			TunnelLogic tunnelLogic = new TunnelLogic(this);
+			HttpTunnel tunnel = new HttpTunnel(new Uri(txtUrl.Text), "POST");
+
+			tunnelLogic.StartTunnel(tunnel, txtLocalIPAddr.Text, Convert.ToInt32(txtLocalPort.Text));
+		}
+
+		#region IMessageWriter Members
+
+		private delegate void WriteLineDelegate(string value);
+		private delegate void WriteLineFormatDelegate(string format, object arg0);
+
+		public void WriteLine(string value)
+		{
+			if (lstMessages.InvokeRequired)
+				lstMessages.Invoke(new WriteLineDelegate(WriteLine), value);
+			else
+				lstMessages.Items.Add(value);
+		}
+
+		public void WriteLine(string format, object arg0)
+		{
+			WriteLine(string.Format(format, arg0));
+		}
+
+		#endregion
 	}
 }
