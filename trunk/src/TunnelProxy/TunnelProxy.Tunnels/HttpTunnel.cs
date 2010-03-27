@@ -55,8 +55,12 @@ namespace TunnelProxy.Tunnels
 
 				byte[] results = StreamUtils.ReadAllBytes(dataStream);
 
-				if (DataReceived != null)
-					DataReceived(this, new DataReceivedEventArgs(results));
+                if (DataReceived != null && results.Length > 2)
+                {
+                    byte[] recvData = new byte[results.Length - 2];
+                    Array.Copy(results, 2, recvData, 0, recvData.Length);
+                    DataReceived(this, new DataReceivedEventArgs(recvData));
+                }
 
 			}
 			finally
@@ -73,7 +77,8 @@ namespace TunnelProxy.Tunnels
 
         public void PollingLoop()
         {
-            Byte[] temp = new Byte[2];
+            Byte[] temp = new Byte[1];
+            temp[0] = 0;
             while (true)
             {
                 Thread.Sleep(500);                
