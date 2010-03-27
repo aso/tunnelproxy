@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using System.Threading;
 using TunnelProxy.Interfaces;
 using System.Net;
 using System.Net.Sockets;
@@ -23,33 +23,24 @@ namespace TunnelProxy.Client.App
 
 		public void StartTunnel(ITunnel tunnel, string localIPAddress, int localPort )
 		{
-			//Tunnel.DataReceived += new EventHandler<DataReceivedEventArgs>(Tunnel_DataReceived);
-			//Int32 port = 13000;
+            byte connectionNum = 1;
 			IPAddress localAddr = IPAddress.Parse(localIPAddress);
 
 			//open server socket
 			TcpListener tcpListener = new TcpListener(localAddr, localPort);
 			tcpListener.Start();
 
-			//create the Tunnel
-			//Tunnel = new HttpTunnel(new Uri("http://localhost:8080"), "POST");
-
 			while (true)
 			{
 				//Wait for new connection
 				TcpClient tcpClient = tcpListener.AcceptTcpClient();
+                SocketClient sclient = new SocketClient(tunnel, tcpClient, _messageWriter, connectionNum++);
 
-				SocketClient sclient = new SocketClient(tunnel, tcpClient, _messageWriter);
-
-				sclient.HandleMessages();
+                Thread bgThread = new Thread(new ThreadStart(sclient.HandleMessages));
+                bgThread.Name = "SocketClientThread";
+                bgThread.Start();
 			}
 
-			//while (true)
-			//{
-			//    string request = Console.ReadLine();
-			//    byte[] data = ConversionUtils.ConvertToBytes(request);
-			//    tunnel.Send(data);
-			//}
 		}
 
 		private void Tunnel_DataReceived(object sender, DataReceivedEventArgs e)
