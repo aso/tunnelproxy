@@ -23,12 +23,20 @@ namespace TunnelProxy.Client.App
 
 		public void StartTunnel(ITunnel tunnel, string localIPAddress, int localPort )
 		{
-            byte connectionNum = 1;
+            UInt16 connectionNum = 1;
 			IPAddress localAddr = IPAddress.Parse(localIPAddress);
+            _tunnel = tunnel;
 
 			//open server socket
 			TcpListener tcpListener = new TcpListener(localAddr, localPort);
 			tcpListener.Start();
+
+            _messageWriter.WriteLine("Starting Tunnel Client");
+
+            //Start Polling Thread
+            Thread bgThread = new Thread(new ThreadStart(PollingLoop));
+            bgThread.Name = "PollingThread";
+            bgThread.Start();
 
 			while (true)
 			{
@@ -36,7 +44,7 @@ namespace TunnelProxy.Client.App
 				TcpClient tcpClient = tcpListener.AcceptTcpClient();
                 SocketClient sclient = new SocketClient(tunnel, tcpClient, _messageWriter, connectionNum++);
 
-                Thread bgThread = new Thread(new ThreadStart(sclient.HandleMessages));
+                bgThread = new Thread(new ThreadStart(sclient.HandleMessages));
                 bgThread.Name = "SocketClientThread";
                 bgThread.Start();
 			}
@@ -51,5 +59,21 @@ namespace TunnelProxy.Client.App
 			_messageWriter.WriteLine("Response from Server: " + response);
 		}
 
+        public void PollingLoop()
+        {
+            UInt16 connNumber = 0;
+            Byte[] temp = new Byte[(int)HeaderIndex.HeaderSize];
+            byte[] connBytes = BitConverter.GetBytes(connNumber);
+            Array.Copy(connBytes, 0, temp, (int)HeaderIndex.ConnectionNumber, connBytes.Length);
+
+            while (true)
+            {
+                Thread.Sleep(500);
+                _tunnel.Send(temp);
+            }
+
+        }
+
+        private ITunnel _tunnel;
 	}
 }

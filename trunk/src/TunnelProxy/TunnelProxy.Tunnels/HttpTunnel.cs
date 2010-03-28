@@ -19,11 +19,6 @@ namespace TunnelProxy.Tunnels
 		{
 			Address = address;
 			RequestMethod = requestMethod;
-
-            Thread bgThread = new Thread(new ThreadStart(PollingLoop));
-            bgThread.Name = "PollingThread";
-            bgThread.Start();
-
 		}
 
 		#region ITunnel Members
@@ -74,18 +69,6 @@ namespace TunnelProxy.Tunnels
             waiting = false;
 
 		}
-
-        public void PollingLoop()
-        {
-            Byte[] temp = new Byte[1];
-            temp[0] = 0;
-            while (true)
-            {
-                Thread.Sleep(500);                
-                Send(temp);
-             }
-
-        }
 
 		public event EventHandler<DataReceivedEventArgs> DataReceived;
 
