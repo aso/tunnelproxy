@@ -12,7 +12,7 @@ namespace TunnelProxy.Client.App
 
     class SocketClient
     {
-        public SocketClient(ITunnel Tunnel, TcpClient tcpclient, IMessageWriter messageWriter, byte socketId)
+        public SocketClient(ITunnel Tunnel, TcpClient tcpclient, IMessageWriter messageWriter, UInt16 socketId)
         {
             _client = tcpclient;
             _tunnel = Tunnel;
@@ -38,9 +38,14 @@ namespace TunnelProxy.Client.App
 
                 if (i > 0)
                 {
-                    bytes = new byte[i + 1];
-                    bytes[0] = _socketId;
-                    Array.Copy(temp, 0, bytes, 1, i);
+                    bytes = new byte[i + (int)HeaderIndex.HeaderSize];
+
+                    //copy connection number into transmit array.
+                    byte[] connNumBytes = BitConverter.GetBytes(_socketId);
+                    Array.Copy(connNumBytes, 0, bytes, (int)HeaderIndex.ConnectionNumber, sizeof(UInt16));
+ 
+                    //copy data from networkstream into transmit array
+                    Array.Copy(temp, 0, bytes, (int)HeaderIndex.HeaderSize, i);
 
                     _messageWriter.WriteLine("--->Sent {0} bytes to server", bytes.Length);
                     _messageWriter.WriteLine(ConversionUtils.ConvertToString(bytes));
@@ -48,12 +53,12 @@ namespace TunnelProxy.Client.App
                 }
                 else
                 {
-                    _tunnel.DataReceived -= new EventHandler<DataReceivedEventArgs>(Tunnel_DataReceived);
                     break;
                 }
             }
 
             // Shutdown and end connection
+            _tunnel.DataReceived -= new EventHandler<DataReceivedEventArgs>(Tunnel_DataReceived);
             _client.Close();
         }
 
@@ -61,10 +66,12 @@ namespace TunnelProxy.Client.App
 		{
 			byte[] data = e.Data;
 
-            if (data[0] == _socketId)
+            UInt16 connNum = BitConverter.ToUInt16(data, (int)HeaderIndex.ConnectionNumber);
+
+            if (connNum == _socketId)
             {
                 _messageWriter.WriteLine("<---Recvd {0} bytes from server", data.Length);
-                _networkStream.Write(data, 1, data.Length - 1);
+                _networkStream.Write(data, (int)HeaderIndex.HeaderSize, data.Length - (int)HeaderIndex.HeaderSize);
             }
 		}
 
@@ -72,7 +79,7 @@ namespace TunnelProxy.Client.App
 		private ITunnel _tunnel;
         private TcpClient _client;
         private NetworkStream _networkStream;
-        private byte _socketId;
+        private UInt16 _socketId;
         private bool _disconnect = false;
 		private IMessageWriter _messageWriter;
     }
