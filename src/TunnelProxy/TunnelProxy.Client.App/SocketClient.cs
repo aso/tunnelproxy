@@ -25,7 +25,7 @@ namespace TunnelProxy.Client.App
         public void HandleMessages()
         {
             int i;
-            Byte[] temp = new Byte[10240];
+            Byte[] temp = new Byte[_maxClientBufferSize];
             Byte[] bytes;
 
 
@@ -33,8 +33,18 @@ namespace TunnelProxy.Client.App
 
             // Loop to receive all the data sent by the client.
             while (_client.Connected && !_disconnect)
-            {    
-                i = _networkStream.Read(temp, 0, temp.Length);
+            {
+                i = 0;
+
+                try
+                {
+                    i = _networkStream.Read(temp, 0, temp.Length);
+                }
+                catch
+                {
+                    _disconnect = true;
+                }
+
 
                 if (i > 0)
                 {
@@ -76,6 +86,7 @@ namespace TunnelProxy.Client.App
 		}
 
         //Member Objects
+        private int _maxClientBufferSize = 10000;
 		private ITunnel _tunnel;
         private TcpClient _client;
         private NetworkStream _networkStream;

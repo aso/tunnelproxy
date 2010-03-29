@@ -32,12 +32,10 @@ namespace TunnelProxy.Tunnels
 			{
 				_tempContext = _httpListener.EndGetContext(result);
 				inputStream = _tempContext.Request.InputStream;
-				byte[] temp = StreamUtils.ReadAllBytes(inputStream);
+				byte[] data = StreamUtils.ReadAllBytes(inputStream);
 
                 if (DataReceived != null)
                 {
-                    byte[] data = new byte[temp.Length - 2];
-                    Array.Copy(temp, 2, data, 0, data.Length);
                     DataReceived(this, new DataReceivedEventArgs(data));
                 }
 
@@ -63,14 +61,10 @@ namespace TunnelProxy.Tunnels
 
                 waiting = true;
 
-                byte[] temp = new byte[data.Length + 2];
-
-                Array.Copy(data, 0, temp, 2, data.Length);
-
 				response = _tempContext.Response;
-                response.ContentLength64 = temp.Length;
+                response.ContentLength64 = data.Length;
 				dataStream = response.OutputStream;
-                dataStream.Write(temp, 0, temp.Length);
+                dataStream.Write(data, 0, data.Length);
 
 				_httpListener.BeginGetContext(new AsyncCallback(GetContextCallBack), null);
 			}
