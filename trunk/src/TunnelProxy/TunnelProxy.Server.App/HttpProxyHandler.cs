@@ -9,6 +9,8 @@ using System.Net.Sockets;
 using System.IO;
 using TunnelProxy.Util;
 
+
+
 namespace TunnelProxy.Server.App
 {
     enum SocksStatus
@@ -107,9 +109,9 @@ namespace TunnelProxy.Server.App
                 //size of zero makes our math work for no data received
                 respData = new byte[0];
             }
-            else
+            else if (respData.Length > 0)
             {
-                _messageWriter.WriteLine("--->Sent {0} bytes to client", respData.Length);
+                _messageWriter.WriteLine(String.Format("--->Sent {0} bytes to client:{1}", respData.Length, connNumber));
             }
 
             //Create response packet, fill in header and data
@@ -126,7 +128,7 @@ namespace TunnelProxy.Server.App
         {
             int i = 0;
             NetworkStream networkStream = client.GetStream();
-            byte[] respData = new byte[1024];
+            byte[] respData = new byte[_maxResponseBufferSize];
 
             if (data.Length > 0)
             {
@@ -235,9 +237,10 @@ namespace TunnelProxy.Server.App
         }
 
         //Member Objects
+        private int _maxResponseBufferSize = 10000;
         private ITunnel _tunnel;
 		private IMessageWriter _messageWriter;
         //private Boolean _continued = false;
-        Hashtable _clients = null;
+        private Hashtable _clients = null;
     }
 }

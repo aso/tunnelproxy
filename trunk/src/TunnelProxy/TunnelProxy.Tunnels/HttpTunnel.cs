@@ -27,9 +27,6 @@ namespace TunnelProxy.Tunnels
 		{
 			WebResponse response = null;
 			Stream dataStream = null;
-            byte[] temp = new byte[data.Length + 2];
-
-            Array.Copy(data, 0, temp, 2, data.Length);
 
             while (waiting) Thread.Sleep(1);
 
@@ -40,9 +37,9 @@ namespace TunnelProxy.Tunnels
 				WebRequest request = WebRequest.Create(Address);
 				request.Method = RequestMethod;
 				//request.ContentType = "application/x-www-form-urlencoded";
-				request.ContentLength = temp.Length;
+				request.ContentLength = data.Length;
 				dataStream = request.GetRequestStream();
-				dataStream.Write(temp, 0, temp.Length);
+				dataStream.Write(data, 0, data.Length);
 				dataStream.Close();
 
 				response = request.GetResponse();
@@ -50,11 +47,9 @@ namespace TunnelProxy.Tunnels
 
 				byte[] results = StreamUtils.ReadAllBytes(dataStream);
 
-                if (DataReceived != null && results.Length > 2)
+                if (DataReceived != null)
                 {
-                    byte[] recvData = new byte[results.Length - 2];
-                    Array.Copy(results, 2, recvData, 0, recvData.Length);
-                    DataReceived(this, new DataReceivedEventArgs(recvData));
+                    DataReceived(this, new DataReceivedEventArgs(results));
                 }
 
 			}
