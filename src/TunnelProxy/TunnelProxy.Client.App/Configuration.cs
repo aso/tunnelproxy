@@ -55,12 +55,17 @@ namespace TunnelProxy.Client.App
 				case "https":
 					pnlTwitter.Visible = false;
 					pnlHtml.Visible = true;
+					pnlEmail.Visible = false;
 					break;
 				case "twitter":
 					pnlTwitter.Visible = true;
 					pnlHtml.Visible = false;
+					pnlEmail.Visible = false;
 					break;
 				case "email":
+					pnlTwitter.Visible = false;
+					pnlHtml.Visible = false;
+					pnlEmail.Visible = true;
 					break;
 				default:
 					break;
@@ -74,17 +79,26 @@ namespace TunnelProxy.Client.App
 
 		private void btnStart_Click(object sender, EventArgs e)
 		{
-			Thread tunnelThread = new Thread(new ThreadStart(StartTunnel));
+			Thread tunnelThread = new Thread(new ParameterizedThreadStart(StartTunnel));
 			tunnelThread.IsBackground = true;
-			tunnelThread.Start();
+			tunnelThread.Start(cbCommunicationType.Text);
 
 			//tunnelLogic.StartTunnel(tunnel, txtLocalIPAddr.Text, Convert.ToInt32(txtLocalPort.Text));
 		}
 
-		private void StartTunnel()
+		private void StartTunnel(object param)
 		{
+			string tunnelType = param as string;
 			TunnelLogic tunnelLogic = new TunnelLogic(this);
-			HttpTunnel tunnel = new HttpTunnel(new Uri(txtUrl.Text), "POST");
+			ITunnel tunnel;
+			if (tunnelType == "email")
+				tunnel = new EmailTunnel(txtSmtpServer.Text, Convert.ToInt32(txtSmtpPort.Text), 
+					txtPopServer.Text, Convert.ToInt32(txtPopPort.Text), txtEmailServerEmailAddress.Text,
+					txtEmailClientEmailAddress.Text, txtEmailClientUserName.Text,
+					txtEmailClientPassword.Text);
+			else
+				tunnel = new HttpTunnel(new Uri(txtUrl.Text), "POST");
+			
 
 			tunnelLogic.StartTunnel(tunnel, txtLocalIPAddr.Text, Convert.ToInt32(txtLocalPort.Text));
 		}
@@ -108,5 +122,6 @@ namespace TunnelProxy.Client.App
 		}
 
 		#endregion
+
 	}
 }

@@ -26,6 +26,7 @@ namespace TunnelProxy.Client.App
             UInt16 connectionNum = 1;
 			IPAddress localAddr = IPAddress.Parse(localIPAddress);
             _tunnel = tunnel;
+			_tunnel.DataReceived += Tunnel_DataReceived;
 
 			//open server socket
 			TcpListener tcpListener = new TcpListener(localAddr, localPort);
@@ -35,6 +36,7 @@ namespace TunnelProxy.Client.App
 
             //Start Polling Thread
             Thread bgThread = new Thread(new ThreadStart(PollingLoop));
+			bgThread.IsBackground = true;
             bgThread.Name = "PollingThread";
             bgThread.Start();
 
@@ -45,6 +47,7 @@ namespace TunnelProxy.Client.App
                 SocketClient sclient = new SocketClient(tunnel, tcpClient, _messageWriter, connectionNum++);
 
                 bgThread = new Thread(new ThreadStart(sclient.HandleMessages));
+				bgThread.IsBackground = true;
                 bgThread.Name = "SocketClientThread";
                 bgThread.Start();
 			}
