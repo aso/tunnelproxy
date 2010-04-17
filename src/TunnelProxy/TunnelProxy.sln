@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+# Visual C# Express 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TunnelProxy.Client.App", "TunnelProxy.Client.App\TunnelProxy.Client.App.csproj", "{6F4208B9-AE5A-4D10-B6EA-2B92680BF949}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TunnelProxy.Server.App", "TunnelProxy.Server.App\TunnelProxy.Server.App.csproj", "{B28E21B5-4835-431A-9278-F09E2AB185DB}"
@@ -10,6 +10,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TunnelProxy.Tunnels", "TunnelProxy.Tunnels\TunnelProxy.Tunnels.csproj", "{EEF54371-58BC-4B90-A2EC-72FC44C217C2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TunnelProxy.Util", "TunnelProxy.Util\TunnelProxy.Util.csproj", "{F909BF11-D812-4D0C-AD8B-83C6B8F588FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftEther.Client.App", "SoftEther.Client.App\SoftEther.Client.App.csproj", "{E2EC83C4-D7B9-47AE-96D9-CD90CC6C8517}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftEther.Server.App", "SoftEther.Server.App\SoftEther.Server.App.csproj", "{B3389B8E-1DE2-4DCB-81BE-2B4BF31BDC30}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +41,14 @@ Global
 		{F909BF11-D812-4D0C-AD8B-83C6B8F588FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F909BF11-D812-4D0C-AD8B-83C6B8F588FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F909BF11-D812-4D0C-AD8B-83C6B8F588FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2EC83C4-D7B9-47AE-96D9-CD90CC6C8517}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2EC83C4-D7B9-47AE-96D9-CD90CC6C8517}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2EC83C4-D7B9-47AE-96D9-CD90CC6C8517}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2EC83C4-D7B9-47AE-96D9-CD90CC6C8517}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3389B8E-1DE2-4DCB-81BE-2B4BF31BDC30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3389B8E-1DE2-4DCB-81BE-2B4BF31BDC30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3389B8E-1DE2-4DCB-81BE-2B4BF31BDC30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3389B8E-1DE2-4DCB-81BE-2B4BF31BDC30}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
