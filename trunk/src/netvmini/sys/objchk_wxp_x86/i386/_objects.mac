@@ -1,0 +1,22 @@
+
+
+386_OBJECTS=\
+ $(OBJ_PATH)\$O\miniport.obj \
+ $(OBJ_PATH)\$O\init.obj \
+ $(OBJ_PATH)\$O\request.obj \
+ $(OBJ_PATH)\$O\sendrcv.obj \
+ $(OBJ_PATH)\$O\ioctl.obj \
+
+
+_RES_FILE=$(OBJ_PATH)\$O\netvmini.res
+
+
+
+# lowercased
+BASEDIR=c:\winddk\7600.16385.0
+OBJECT_ROOT=c:\winddk\7600.16385.0
+MAKEDIR_LOWERCASE=c:\winddk\7600.16385.0\src\network\ndis\netvmini\sys
+MAKEDIR_RELATIVE_TO_BASEDIR=src\network\ndis\netvmini\sys
+OBJ_PATH=c:\winddk\7600.16385.0\src\network\ndis\netvmini\sys
+CONCURRENT_MIDL=0
+CONCURRENT_MANIFEST_BUILD=0
