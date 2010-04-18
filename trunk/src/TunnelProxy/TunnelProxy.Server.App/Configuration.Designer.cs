@@ -240,7 +240,6 @@
 			this.cbCommunicationType.FormattingEnabled = true;
 			this.cbCommunicationType.Items.AddRange(new object[] {
             "http",
-            "https",
             "twitter",
             "email"});
 			this.cbCommunicationType.Location = new System.Drawing.Point(124, 9);

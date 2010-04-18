@@ -53,7 +53,6 @@ namespace TunnelProxy.Server.App
 			switch (cbCommunicationType.SelectedItem.ToString())
 			{
 				case "http":
-				case "https":
 					pnlTwitter.Visible = false;
 					pnlHtml.Visible = true;
 					pnlEmail.Visible = false;
