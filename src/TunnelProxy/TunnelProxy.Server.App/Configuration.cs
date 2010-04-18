@@ -94,8 +94,6 @@ namespace TunnelProxy.Server.App
 			else
 				tunnel = new HttpServerTunnel(txtUrl.Text);
 			tunnelLogic.StartTunnel(tunnel);
-
-            while (true) ;
 		}
 
 		#region IMessageWriter Members

@@ -12,6 +12,7 @@ namespace TunnelProxy.Tunnels
 {
 	public class EmailTunnel : ITunnel
 	{
+		private static object _emailLock = new object();
 		private bool _waiting = false;
 		//private InterIMAP.IMAPClient _imapClient;
 		//private Koolwired.Imap.ImapCommand _command;
@@ -75,35 +76,39 @@ namespace TunnelProxy.Tunnels
 		{
 			_updateTimer.Stop();
 
-			_client = new Higuchi.Net.Pop3.Pop3Client();
-			_client.UserName = ClientUserName;
-			_client.Password = ClientPassword;
-			_client.ServerName = PopServer;
-			_client.Port = PopPort;
-			_client.Ssl = true;
-			_client.ReceiveTimeout = 30000;
-			_client.Authenticate();
-			long mailCount = _client.GetTotalMessageCount();
-			if (mailCount > _previousMailCount)
+			lock (_emailLock)
 			{
-				for (long i = _previousMailCount + 1; i <= mailCount; i++)
+				_client = new Higuchi.Net.Pop3.Pop3Client();
+				_client.UserName = ClientUserName;
+				_client.Password = ClientPassword;
+				_client.ServerName = PopServer;
+				_client.Port = PopPort;
+				_client.Ssl = true;
+				_client.ReceiveTimeout = 30000;
+				_client.Authenticate();
+				long mailCount = _client.GetTotalMessageCount();
+				if (mailCount > _previousMailCount)
 				{
-					Higuchi.Net.Pop3.Pop3Message message = _client.GetMessage(i);
-					if (message.To == ClientEmailAddress && message.From == ServerEmailAddress && message.Subject == "TunnelProxy")
+					for (long i = _previousMailCount + 1; i <= mailCount; i++)
 					{
-						string body = message.BodyText;
-						byte[] data = ConversionUtils.ConvertToBytes(body);
-						if (DataReceived != null)
-							DataReceived(this, new DataReceivedEventArgs(data));
-						//_client.DeleteEMail(i);
-						//_client.ExecuteDele(listResult.MailIndex);
-						//_client.ExecuteQuit();
-						//_client.Authenticate();
+						Higuchi.Net.Pop3.Pop3Message message = _client.GetMessage(i);
+						if (message.To == ClientEmailAddress && message.From == ServerEmailAddress && message.Subject == "TunnelProxy")
+						{
+							string body = message.BodyText;
+							if (body.EndsWith("\r\n\r\n"))
+								body = body.Substring(0, body.Length - 4);
+							byte[] data = ConversionUtils.ConvertToBytes(body);
+							if (DataReceived != null)
+								DataReceived(this, new DataReceivedEventArgs(data));
+							//_client.DeleteEMail(i);
+							//_client.ExecuteDele(listResult.MailIndex);
+							//_client.ExecuteQuit();
+							//_client.Authenticate();
+						}
 					}
+					_previousMailCount = mailCount;
 				}
-				_previousMailCount = mailCount;
 			}
-
 			_updateTimer.Start();
 
 			//InterIMAP.IMAPMessageCollection messages = _imapClient.Folders[0].Messages;
@@ -147,26 +152,27 @@ namespace TunnelProxy.Tunnels
 			while (_waiting) Thread.Sleep(1);
 
 			_waiting = true;
-
-			try
+			lock (_emailLock)
 			{
-				System.Net.Mail.SmtpClient smtpClient = new System.Net.Mail.SmtpClient(SmtpServer, SmtpPort);
-				smtpClient.Credentials = new System.Net.NetworkCredential(ClientUserName, ClientPassword);
-				System.Net.Mail.MailMessage message = new System.Net.Mail.MailMessage(ClientEmailAddress, ServerEmailAddress);
-				message.IsBodyHtml = false;
-				message.Body = ConversionUtils.ConvertToString(data);
-				message.Subject = "TunnelProxy";
-				smtpClient.EnableSsl = true;
-				smtpClient.Send(message);
+				try
+				{
+					System.Net.Mail.SmtpClient smtpClient = new System.Net.Mail.SmtpClient(SmtpServer, SmtpPort);
+					smtpClient.Credentials = new System.Net.NetworkCredential(ClientUserName, ClientPassword);
+					System.Net.Mail.MailMessage message = new System.Net.Mail.MailMessage(ClientEmailAddress, ServerEmailAddress);
+					message.IsBodyHtml = false;
+					message.Body = ConversionUtils.ConvertToString(data);
+					message.Subject = "TunnelProxy";
+					smtpClient.EnableSsl = true;
+					smtpClient.Send(message);
+				}
+				finally
+				{
+					if (dataStream != null)
+						dataStream.Close();
+					if (response != null)
+						response.Close();
+				}
 			}
-			finally
-			{
-				if (dataStream != null)
-					dataStream.Close();
-				if (response != null)
-					response.Close();
-			}
-
 			_waiting = false;
 
 		}
