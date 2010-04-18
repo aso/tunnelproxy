@@ -43,7 +43,7 @@ namespace TunnelProxy.Server.App
         {
             _clients = new Hashtable();
             _tunnel = tunnel;
-			_messageWriter = messageWriter;
+            _messageWriter = messageWriter;
             _tunnel.DataReceived += new EventHandler<DataReceivedEventArgs>(Tunnel_DataReceived);
         }
 
@@ -51,6 +51,7 @@ namespace TunnelProxy.Server.App
         {
             byte[] data = new byte[e.Data.Length - (int)HeaderIndex.HeaderSize];
             byte[] respData = null;
+            TcpClient client = null;
 
             //Fill in data array
             Array.Copy(e.Data, (int)HeaderIndex.HeaderSize, data, 0, e.Data.Length - (int)HeaderIndex.HeaderSize);
@@ -61,19 +62,23 @@ namespace TunnelProxy.Server.App
             //If we received a poll command, loop through all open connections and see if there is any data 
             // to send
             if (connNumber == 0)
-            {                
+            {
                 foreach (UInt16 key in _clients.Keys)
                 {
                     connNumber = key;
-                    respData = HandleMessage((TcpClient)_clients[key], data);
+                    client = (TcpClient)_clients[key];
 
-                    if (respData.Length > 0) break; 
+                    if (client != null)
+                    {
+                        respData = HandleMessage(client, data);
+                        if (respData.Length > 0) break;
+                    }
                 }
             }
-            else 
+            else
             {
                 //We received data for a specific destination, open if needed
-                TcpClient client = (TcpClient)_clients[connNumber];
+                client = (TcpClient)_clients[connNumber];
 
                 if (client == null)
                 {
@@ -87,7 +92,11 @@ namespace TunnelProxy.Server.App
                         if (HandleHTTPConnection(connNumber, data))
                         {
                             client = (TcpClient)_clients[connNumber];
-                            respData = HandleMessage(client, data);
+
+                            if (client != null)
+                            {
+                                respData = HandleMessage(client, data);
+                            }
                         }
                         else
                         {
@@ -120,43 +129,44 @@ namespace TunnelProxy.Server.App
             Array.Copy(connBytes, 0, response, (int)HeaderIndex.ConnectionNumber, connBytes.Length);
             Array.Copy(respData, 0, response, (int)HeaderIndex.HeaderSize, respData.Length);
 
-            _tunnel.Send(response);         
+            _tunnel.Send(response);
 
         }
 
         private byte[] HandleMessage(TcpClient client, byte[] data)
         {
-            int i = 0;
+            int i = 0;            
+
             NetworkStream networkStream = client.GetStream();
             byte[] respData = new byte[_maxResponseBufferSize];
 
             if (data.Length > 0)
             {
-               _messageWriter.WriteLine("--->Recvd {0} bytes from client", data.Length);
-               _messageWriter.WriteLine(ConversionUtils.ConvertToString(data));
+                _messageWriter.WriteLine("--->Recvd {0} bytes from client", data.Length);
+                _messageWriter.WriteLine(ConversionUtils.ConvertToString(data));
 
                 //write new data from client to socket
                 networkStream.Write(data, 0, data.Length);
             }
 
-             try
-             {
+            try
+            {
                 if (networkStream.DataAvailable)
                 {
-                   i = networkStream.Read(respData, 0, respData.Length);
-					_messageWriter.WriteLine("Read Resp: {0}", i);
+                    i = networkStream.Read(respData, 0, respData.Length);
+                    _messageWriter.WriteLine("Read Resp: {0}", i);
 
                 }
 
-              }
-              catch (Exception except)
-              {
-			     _messageWriter.WriteLine("Error: {0}", except.Message);
-              }
+            }
+            catch (Exception except)
+            {
+                _messageWriter.WriteLine("Error: {0}", except.Message);
+            }
 
-              Array.Resize(ref respData, i);
+            Array.Resize(ref respData, i);
 
-              return (respData);
+            return (respData);
         }
 
         private bool HandleHTTPConnection(UInt16 connIndex, byte[] data)
@@ -165,11 +175,11 @@ namespace TunnelProxy.Server.App
 
             //print data for debugging
             string request = System.Text.Encoding.UTF8.GetString(data);
- 
+
             if (request.Contains("Host") != false)
             {
                 client = ConnectToHost(request);
-                _clients.Add(connIndex, client);             
+                _clients.Add(connIndex, client);
             }
 
             return (client != null);
@@ -180,7 +190,7 @@ namespace TunnelProxy.Server.App
             TcpClient client = null;
             byte[] respData = new Byte[(int)SocksHeaderDataIndex.HeaderEnd];
             UInt16 port;
-            UInt32 ip;            
+            UInt32 ip;
 
             //print data for debugging
             _messageWriter.WriteLine("Handling SOCKS Request");
@@ -189,7 +199,7 @@ namespace TunnelProxy.Server.App
             Array.Copy(data, 0, respData, 0, respData.Length); //copy port & ip to resp
 
             respData[(int)SocksHeaderDataIndex.Version] = 0x00; //just set to NULL
-            
+
 
             //convert port & IP from network byte order
             Array.Reverse(data, (int)SocksHeaderDataIndex.Port, 2);
@@ -217,21 +227,29 @@ namespace TunnelProxy.Server.App
 
         TcpClient ConnectToHost(string request)
         {
-            TcpClient client;
-            StringReader reader = new StringReader(request);
-            string server;            
+            TcpClient client = null;
 
-            string line = reader.ReadLine();
-
-            while (line.Contains("Host: ") == false)
+            try
             {
-                line = reader.ReadLine();
+
+                StringReader reader = new StringReader(request);
+                string server;
+
+                string line = reader.ReadLine();
+
+                while (line.Contains("Host: ") == false)
+                {
+                    line = reader.ReadLine();
+                }
+
+                server = line.TrimStart("Host: ".ToCharArray());
+
+                _messageWriter.WriteLine("Connecting to: {0}", server);
+                client = new TcpClient(server, 80);
             }
-
-            server = line.TrimStart("Host: ".ToCharArray());
-
-            _messageWriter.WriteLine("Connecting to: {0}", server);
-            client = new TcpClient(server, 80);
+            catch 
+            {
+            }
 
             return (client);
         }
@@ -239,7 +257,7 @@ namespace TunnelProxy.Server.App
         //Member Objects
         private int _maxResponseBufferSize = 10000;
         private ITunnel _tunnel;
-		private IMessageWriter _messageWriter;
+        private IMessageWriter _messageWriter;
         //private Boolean _continued = false;
         private Hashtable _clients = null;
     }
