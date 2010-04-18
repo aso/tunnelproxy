@@ -66,7 +66,7 @@ namespace TunnelProxy.Tunnels
 			_client.ReceiveTimeout = 30000;
 			_client.Authenticate();
 			_previousMailCount = _client.GetTotalMessageCount();
-			_updateTimer = new System.Timers.Timer(1000);
+			_updateTimer = new System.Timers.Timer(100);
 			_updateTimer.Elapsed += updateTimer_Elapsed;
 			_updateTimer.Start();
 		}
@@ -75,6 +75,14 @@ namespace TunnelProxy.Tunnels
 		{
 			_updateTimer.Stop();
 
+			_client = new Higuchi.Net.Pop3.Pop3Client();
+			_client.UserName = ClientUserName;
+			_client.Password = ClientPassword;
+			_client.ServerName = PopServer;
+			_client.Port = PopPort;
+			_client.Ssl = true;
+			_client.ReceiveTimeout = 30000;
+			_client.Authenticate();
 			long mailCount = _client.GetTotalMessageCount();
 			if (mailCount > _previousMailCount)
 			{
@@ -93,6 +101,7 @@ namespace TunnelProxy.Tunnels
 						//_client.Authenticate();
 					}
 				}
+				_previousMailCount = mailCount;
 			}
 
 			_updateTimer.Start();
