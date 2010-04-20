@@ -99,7 +99,7 @@ namespace TunnelProxy.Client.App
 				tunnel = new HttpTunnel(new Uri(txtUrl.Text), "POST");
 			
 
-			tunnelLogic.StartTunnel(tunnel, txtLocalIPAddr.Text, Convert.ToInt32(txtLocalPort.Text));
+			tunnelLogic.StartTunnel(new TunnelDataEncrypter(tunnel, "testing"), txtLocalIPAddr.Text, Convert.ToInt32(txtLocalPort.Text));
 		}
 
 		#region IMessageWriter Members
@@ -121,6 +121,11 @@ namespace TunnelProxy.Client.App
 		}
 
 		#endregion
+
+        private void lstMessages_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
 
 	}
 }

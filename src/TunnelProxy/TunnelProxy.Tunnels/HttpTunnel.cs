@@ -34,7 +34,7 @@ namespace TunnelProxy.Tunnels
 
 			try
 			{
-				WebRequest request = WebRequest.Create(Address);
+				WebRequest request = WebRequest.Create(Address + TunnelProxy.Util.StreamUtils.GetRandomName() + ".jpg" );
 				request.Method = RequestMethod;
 				//request.ContentType = "application/x-www-form-urlencoded";
 				request.ContentLength = data.Length;
