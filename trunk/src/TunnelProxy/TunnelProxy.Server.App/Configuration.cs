@@ -6,10 +6,12 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Threading;
 
 using TunnelProxy.Interfaces;
 using TunnelProxy.Tunnels;
-using System.Threading;
+using TunnelProxy.Util;
+
 
 namespace TunnelProxy.Server.App
 {
@@ -93,7 +95,10 @@ namespace TunnelProxy.Server.App
 					txtEmailClientPassword.Text);
 			else
 				tunnel = new HttpServerTunnel(txtUrl.Text);
-			tunnelLogic.StartTunnel(tunnel);
+
+            tunnelLogic.StartTunnel(new TunnelDataEncrypter(tunnel, "testing"));
+
+            while (true) System.Threading.Thread.Sleep(50);
 		}
 
 		#region IMessageWriter Members
@@ -115,5 +120,10 @@ namespace TunnelProxy.Server.App
 		}
 
 		#endregion
+
+        private void lstMessages_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
 	}
 }

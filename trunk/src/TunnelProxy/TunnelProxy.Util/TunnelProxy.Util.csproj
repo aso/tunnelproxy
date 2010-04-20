@@ -45,9 +45,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TunnelDataEncrypter.cs" />
     <Compile Include="ConversionUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StreamUtils.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TunnelProxy.Interfaces\TunnelProxy.Interfaces.csproj">
+      <Project>{65ED19FF-B922-4E84-89EA-0667DC612F9E}</Project>
+      <Name>TunnelProxy.Interfaces</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
