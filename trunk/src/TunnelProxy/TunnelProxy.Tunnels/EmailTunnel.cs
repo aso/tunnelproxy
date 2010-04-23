@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using TunnelProxy.Interfaces;
 using System.Threading;
 using TunnelProxy.Util;
 using System.Net;
 using System.IO;
+using System.Net.Mime;
 
 namespace TunnelProxy.Tunnels
 {
@@ -94,10 +96,34 @@ namespace TunnelProxy.Tunnels
 						Higuchi.Net.Pop3.Pop3Message message = _client.GetMessage(i);
 						if (message.To == ClientEmailAddress && message.From == ServerEmailAddress && message.Subject == "TunnelProxy")
 						{
-							string body = message.BodyText;
-							if (body.EndsWith("\r\n\r\n"))
-								body = body.Substring(0, body.Length - 4);
-							byte[] data = ConversionUtils.ConvertToBytes(body);
+							
+							List<Higuchi.Net.Pop3.Pop3Content> l = Higuchi.Net.Pop3.Pop3Message.GetAttachedContents(message);
+							byte[] data = ConversionUtils.ConvertToBytes(l[0].BodyText);
+							//for (int j = 0; j < l.Count; j++)
+							//{
+							//    if (l[j].ContentDisposition.FileName == this.AttachedFileList.SelectedValue.ToString())
+							//    {
+							//        this.statusStrip1.Text = "Downloading...";
+							//        String s = String.Format(@"{0}{1}", this.OutputFilePath.Text, l[i].ContentDisposition.FileName);
+							//        this.EnsureDirectoryExist();
+							//        l[i].DecodeData(s);
+							//        break;
+							//    }
+							//}
+
+							//byte[] data = l[0].
+							//MemoryStream dataStream = new MemoryStream(
+							//l[0].DecodeData(
+						
+
+
+
+
+							//string body = message.BodyText;
+							
+							//if (body.EndsWith("\r\n\r\n"))
+							//	body = body.Substring(0, body.Length - 4);
+							//byte[] data = ConversionUtils.ConvertToBytes(body);
 							if (DataReceived != null)
 								DataReceived(this, new DataReceivedEventArgs(data));
 							//_client.DeleteEMail(i);
@@ -156,11 +182,19 @@ namespace TunnelProxy.Tunnels
 			{
 				try
 				{
-					System.Net.Mail.SmtpClient smtpClient = new System.Net.Mail.SmtpClient(SmtpServer, SmtpPort);
+					SmtpClient smtpClient = new SmtpClient(SmtpServer, SmtpPort);
 					smtpClient.Credentials = new System.Net.NetworkCredential(ClientUserName, ClientPassword);
-					System.Net.Mail.MailMessage message = new System.Net.Mail.MailMessage(ClientEmailAddress, ServerEmailAddress);
+					MailMessage message = new MailMessage(ClientEmailAddress, ServerEmailAddress);
 					message.IsBodyHtml = false;
-					message.Body = ConversionUtils.ConvertToString(data);
+					//message.Body = ConversionUtils.ConvertToString(data);
+					Stream attachmentStream = new MemoryStream(data);
+					ContentType ct = new ContentType(MediaTypeNames.Text.Plain);
+					// Attach the log file stream to the e-mail message.
+					Attachment dataAttachment = new Attachment(attachmentStream, ct);
+					ContentDisposition disposition = dataAttachment.ContentDisposition;
+					disposition.FileName = "data.txt";
+					message.Attachments.Add(dataAttachment);
+
 					message.Subject = "TunnelProxy";
 					smtpClient.EnableSsl = true;
 					smtpClient.Send(message);
@@ -176,16 +210,6 @@ namespace TunnelProxy.Tunnels
 			_waiting = false;
 
 		}
-
-		//private void EmailReceived()
-		//{
-		//    string body = string.Empty;
-		//    byte[] data = ConversionUtils.ConvertToBytes(body);
-		//    if (DataReceived != null)
-		//    {
-		//        DataReceived(this, new DataReceivedEventArgs(data));
-		//    }
-		//}
 
 		public event EventHandler<DataReceivedEventArgs> DataReceived;
 

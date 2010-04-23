@@ -17,37 +17,38 @@ namespace TunnelProxy.Server.App
 {
 	public partial class Configuration : Form, IMessageWriter
 	{
+		NotifyIcon _trayIcon = new NotifyIcon();
+
 		public Configuration()
 		{
 			InitializeComponent();
 			cbCommunicationType.SelectedIndex = 0;
+
+			this.Resize += new EventHandler(Configuration_Resize);
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Configuration));
+			_trayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			_trayIcon.DoubleClick += new EventHandler(_trayIcon_DoubleClick);
+		}
+
+		void Configuration_Resize(object sender, EventArgs e)
+		{
+			if (WindowState == FormWindowState.Minimized)
+			{
+				this.Hide();
+				_trayIcon.Visible = true;
+			}
+		}
+
+		void _trayIcon_DoubleClick(object sender, EventArgs e)
+		{
+			_trayIcon.Visible = false;
+			this.Show();
+			this.BringToFront();
 		}
 
 		private void Configuration_Load(object sender, EventArgs e)
 		{
 			cbCommunicationType.SelectedIndex = 0;
-		}
-
-		private void rbIPAddr_CheckedChanged(object sender, EventArgs e)
-		{
-			if (rbIPAddr.Checked)
-			{
-				lblIP.Visible = true;
-				txtIPAddr.Visible = true;
-				lblPort.Visible = true;
-				txtPort.Visible = true;
-				lblUrl.Visible = false;
-				txtUrl.Visible = false;
-			}
-			else
-			{
-				lblIP.Visible = false;
-				txtIPAddr.Visible = false;
-				lblPort.Visible = false;
-				txtPort.Visible = false;
-				lblUrl.Visible = true;
-				txtUrl.Visible = true;
-			}
 		}
 
 		private void cbCommunicationType_SelectedIndexChanged(object sender, EventArgs e)
@@ -96,7 +97,10 @@ namespace TunnelProxy.Server.App
 			else
 				tunnel = new HttpServerTunnel(txtUrl.Text);
 
-            tunnelLogic.StartTunnel(new TunnelDataEncrypter(tunnel, "testing"));
+			if (chkEncryptData.Checked)
+				tunnel = new TunnelDataEncrypter(tunnel, "testing");
+
+			tunnelLogic.StartTunnel(tunnel);
 
             while (true) System.Threading.Thread.Sleep(50);
 		}
