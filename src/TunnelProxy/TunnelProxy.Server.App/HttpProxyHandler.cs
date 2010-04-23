@@ -179,6 +179,9 @@ namespace TunnelProxy.Server.App
             if (request.Contains("Host") != false)
             {
                 client = ConnectToHost(request);
+
+                if (_clients[connIndex] != null)
+                    _clients.Remove(connIndex);
                 _clients.Add(connIndex, client);
             }
 
@@ -233,7 +236,7 @@ namespace TunnelProxy.Server.App
             {
 
                 StringReader reader = new StringReader(request);
-                string server;
+                string[] parsedLine;
 
                 string line = reader.ReadLine();
 
@@ -242,10 +245,10 @@ namespace TunnelProxy.Server.App
                     line = reader.ReadLine();
                 }
 
-                server = line.TrimStart("Host: ".ToCharArray());
+                parsedLine = line.Split(' ');
 
-                _messageWriter.WriteLine("Connecting to: {0}", server);
-                client = new TcpClient(server, 80);
+                _messageWriter.WriteLine("Connecting to: {0}", parsedLine[1]);
+                client = new TcpClient(parsedLine[1], 80);
             }
             catch 
             {
