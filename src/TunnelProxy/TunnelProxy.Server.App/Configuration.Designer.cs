@@ -190,6 +190,7 @@
 			// 
 			this.lstMessages.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.lstMessages.FormattingEnabled = true;
+			this.lstMessages.HorizontalScrollbar = true;
 			this.lstMessages.Location = new System.Drawing.Point(0, 282);
 			this.lstMessages.Name = "lstMessages";
 			this.lstMessages.Size = new System.Drawing.Size(438, 199);

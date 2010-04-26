@@ -86,23 +86,30 @@ namespace TunnelProxy.Server.App
 
 		private void StartTunnel(object param)
 		{
-			string tunnelType = param as string;
-			TunnelLogic tunnelLogic = new TunnelLogic(this);
-			ITunnel tunnel;
-			if (tunnelType == "email")
-				tunnel = new EmailTunnel(txtSmtpServer.Text, Convert.ToInt32(txtSmtpPort.Text),
-					txtPopServer.Text, Convert.ToInt32(txtPopPort.Text), txtEmailServerEmailAddress.Text,
-					txtEmailClientEmailAddress.Text, txtEmailClientUserName.Text,
-					txtEmailClientPassword.Text);
-			else
-				tunnel = new HttpServerTunnel(txtUrl.Text);
+			try
+			{
+				string tunnelType = param as string;
+				TunnelLogic tunnelLogic = new TunnelLogic(this);
+				ITunnel tunnel;
+				if (tunnelType == "email")
+					tunnel = new EmailTunnel(txtSmtpServer.Text, Convert.ToInt32(txtSmtpPort.Text),
+						txtPopServer.Text, Convert.ToInt32(txtPopPort.Text), txtEmailServerEmailAddress.Text,
+						txtEmailClientEmailAddress.Text, txtEmailClientUserName.Text,
+						txtEmailClientPassword.Text);
+				else
+					tunnel = new HttpServerTunnel(txtUrl.Text);
 
-			if (chkEncryptData.Checked)
-				tunnel = new TunnelDataEncrypter(tunnel, "testing");
+				if (chkEncryptData.Checked)
+					tunnel = new TunnelDataEncrypter(tunnel, "testing");
 
-			tunnelLogic.StartTunnel(tunnel);
+				tunnelLogic.StartTunnel(tunnel);
 
-            while (true) System.Threading.Thread.Sleep(50);
+				while (true) System.Threading.Thread.Sleep(50);
+			}
+			catch (Exception ex)
+			{
+				WriteLine(ex.Message + " " + ex.StackTrace);
+			}
 		}
 
 		#region IMessageWriter Members
@@ -115,7 +122,12 @@ namespace TunnelProxy.Server.App
 			if (lstMessages.InvokeRequired)
 				lstMessages.Invoke(new WriteLineDelegate(WriteLine), value);
 			else
+			{
 				lstMessages.Items.Add(value);
+				lstMessages.SetSelected(lstMessages.Items.Count - 1, true);
+				lstMessages.SetSelected(lstMessages.Items.Count - 1, false);
+				//lstMessa
+			}
 		}
 
 		public void WriteLine(string format, object arg0)

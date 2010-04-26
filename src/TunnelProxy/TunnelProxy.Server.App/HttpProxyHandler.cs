@@ -49,87 +49,94 @@ namespace TunnelProxy.Server.App
 
         private void Tunnel_DataReceived(object sender, DataReceivedEventArgs e)
         {
-            byte[] data = new byte[e.Data.Length - (int)HeaderIndex.HeaderSize];
-            byte[] respData = null;
-            TcpClient client = null;
+			try
+			{
+				byte[] data = new byte[e.Data.Length - (int)HeaderIndex.HeaderSize];
+				byte[] respData = null;
+				TcpClient client = null;
 
-            //Fill in data array
-            Array.Copy(e.Data, (int)HeaderIndex.HeaderSize, data, 0, e.Data.Length - (int)HeaderIndex.HeaderSize);
+				//Fill in data array
+				Array.Copy(e.Data, (int)HeaderIndex.HeaderSize, data, 0, e.Data.Length - (int)HeaderIndex.HeaderSize);
 
-            UInt16 connNumber = BitConverter.ToUInt16(e.Data, (int)HeaderIndex.ConnectionNumber);
-            byte command = e.Data[(int)HeaderIndex.Command];
+				UInt16 connNumber = BitConverter.ToUInt16(e.Data, (int)HeaderIndex.ConnectionNumber);
+				byte command = e.Data[(int)HeaderIndex.Command];
 
-            //If we received a poll command, loop through all open connections and see if there is any data 
-            // to send
-            if (connNumber == 0)
-            {
-                foreach (UInt16 key in _clients.Keys)
-                {
-                    connNumber = key;
-                    client = (TcpClient)_clients[key];
+				//If we received a poll command, loop through all open connections and see if there is any data 
+				// to send
+				if (connNumber == 0)
+				{
+					foreach (UInt16 key in _clients.Keys)
+					{
+						connNumber = key;
+						client = (TcpClient)_clients[key];
 
-                    if (client != null)
-                    {
-                        respData = HandleMessage(client, data);
-                        if (respData.Length > 0) break;
-                    }
-                }
-            }
-            else
-            {
-                //We received data for a specific destination, open if needed
-                client = (TcpClient)_clients[connNumber];
+						if (client != null)
+						{
+							respData = HandleMessage(client, data);
+							if (respData.Length > 0) break;
+						}
+					}
+				}
+				else
+				{
+					//We received data for a specific destination, open if needed
+					client = (TcpClient)_clients[connNumber];
 
-                if (client == null)
-                {
-                    //Check to see if it is a SOCKS connection request
-                    if (data[(int)SocksHeaderDataIndex.Version] == 0x04)
-                    {
-                        respData = HandleSOCKSConnection(connNumber, data);
-                    }
-                    else  //Try as a HTTP request
-                    {
-                        if (HandleHTTPConnection(connNumber, data))
-                        {
-                            client = (TcpClient)_clients[connNumber];
+					if (client == null)
+					{
+						//Check to see if it is a SOCKS connection request
+						if (data[(int)SocksHeaderDataIndex.Version] == 0x04)
+						{
+							respData = HandleSOCKSConnection(connNumber, data);
+						}
+						else  //Try as a HTTP request
+						{
+							if (HandleHTTPConnection(connNumber, data))
+							{
+								client = (TcpClient)_clients[connNumber];
 
-                            if (client != null)
-                            {
-                                respData = HandleMessage(client, data);
-                            }
-                        }
-                        else
-                        {
-                            //error handle-- future: close client connection?
-                            command = (byte)HeaderCommands.CloseConnection;
-                        }
-                    }
-                }
-                else
-                {
-                    //seems like we already have a connection established, send data
-                    respData = HandleMessage(client, data);
-                }
-            }
+								if (client != null)
+								{
+									respData = HandleMessage(client, data);
+								}
+							}
+							else
+							{
+								//error handle-- future: close client connection?
+								command = (byte)HeaderCommands.CloseConnection;
+							}
+						}
+					}
+					else
+					{
+						//seems like we already have a connection established, send data
+						respData = HandleMessage(client, data);
+					}
+				}
 
-            if (respData == null)
-            {
-                //we're expecting this array to be allocated below, 
-                //size of zero makes our math work for no data received
-                respData = new byte[0];
-            }
-            else if (respData.Length > 0)
-            {
-                _messageWriter.WriteLine(String.Format("--->Sent {0} bytes to client:{1}", respData.Length, connNumber));
-            }
+				if (respData == null)
+				{
+					//we're expecting this array to be allocated below, 
+					//size of zero makes our math work for no data received
+					respData = new byte[0];
+				}
+				else if (respData.Length > 0)
+				{
+					_messageWriter.WriteLine(String.Format("--->Sent {0} bytes to client:{1}", respData.Length, connNumber));
+				}
 
-            //Create response packet, fill in header and data
-            byte[] response = new byte[respData.Length + (int)HeaderIndex.HeaderSize];
-            byte[] connBytes = BitConverter.GetBytes(connNumber);
-            Array.Copy(connBytes, 0, response, (int)HeaderIndex.ConnectionNumber, connBytes.Length);
-            Array.Copy(respData, 0, response, (int)HeaderIndex.HeaderSize, respData.Length);
+				//Create response packet, fill in header and data
+				byte[] response = new byte[respData.Length + (int)HeaderIndex.HeaderSize];
+				byte[] connBytes = BitConverter.GetBytes(connNumber);
+				Array.Copy(connBytes, 0, response, (int)HeaderIndex.ConnectionNumber, connBytes.Length);
+				Array.Copy(respData, 0, response, (int)HeaderIndex.HeaderSize, respData.Length);
 
-            _tunnel.Send(response);
+				_tunnel.Send(response);
+			}
+			catch (Exception ex)
+			{
+				_messageWriter.WriteLine(ex.Message + " " + ex.StackTrace);
+			}
 
         }
 

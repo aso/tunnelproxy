@@ -96,28 +96,15 @@ namespace TunnelProxy.Tunnels
 						Higuchi.Net.Pop3.Pop3Message message = _client.GetMessage(i);
 						if (message.To == ClientEmailAddress && message.From == ServerEmailAddress && message.Subject == "TunnelProxy")
 						{
-							
 							List<Higuchi.Net.Pop3.Pop3Content> l = Higuchi.Net.Pop3.Pop3Message.GetAttachedContents(message);
-							byte[] data = ConversionUtils.ConvertToBytes(l[0].BodyText);
-							//for (int j = 0; j < l.Count; j++)
-							//{
-							//    if (l[j].ContentDisposition.FileName == this.AttachedFileList.SelectedValue.ToString())
-							//    {
-							//        this.statusStrip1.Text = "Downloading...";
-							//        String s = String.Format(@"{0}{1}", this.OutputFilePath.Text, l[i].ContentDisposition.FileName);
-							//        this.EnsureDirectoryExist();
-							//        l[i].DecodeData(s);
-							//        break;
-							//    }
-							//}
+							MemoryStream dataStream = new MemoryStream(10000);
 
-							//byte[] data = l[0].
-							//MemoryStream dataStream = new MemoryStream(
-							//l[0].DecodeData(
-						
+							l[0].DecodeData(dataStream, false);
+							dataStream.Flush();
 
+							byte[] data = dataStream.ToArray();
 
-
+							//byte[] data = ConversionUtils.ConvertToBytes(l[0].BodyText);
 
 							//string body = message.BodyText;
 							
@@ -126,46 +113,12 @@ namespace TunnelProxy.Tunnels
 							//byte[] data = ConversionUtils.ConvertToBytes(body);
 							if (DataReceived != null)
 								DataReceived(this, new DataReceivedEventArgs(data));
-							//_client.DeleteEMail(i);
-							//_client.ExecuteDele(listResult.MailIndex);
-							//_client.ExecuteQuit();
-							//_client.Authenticate();
 						}
 					}
 					_previousMailCount = mailCount;
 				}
 			}
 			_updateTimer.Start();
-
-			//InterIMAP.IMAPMessageCollection messages = _imapClient.Folders[0].Messages;
-			//foreach (InterIMAP.IMAPMessage message in messages)
-			//{
-			//    InterIMAP.IMAPMessage filledMessage =  _imapClient.Folders[0].GetMessageByID(message.Uid);
-			//    //message.
-			//    if (DataReceived != null)
-			//    {
-			//        if (filledMessage.TextData != null)
-			//        {
-			//            byte[] data = ConversionUtils.ConvertToBytes(filledMessage.TextData.TextData);
-			//            DataReceived(this, new DataReceivedEventArgs(data));
-			//        }
-			//    }
-			//}
-
-			
-			//Koolwired.Imap.ImapMailbox mailbox = _command.Select("INBOX");
-			//mailbox = _command.Fetch(mailbox);
-			////authenticate.Logout();
-			////connection.Close();
-			//foreach (Koolwired.Imap.ImapMailboxMessage message in mailbox.Messages)
-			//{
-			//    if(DataReceived!=null)
-			//    {
-			//        Koolwired.Imap.ImapMailboxMessage fetchedMessage = _command.FetchBodyStructure(message);
-			//        byte[] data = ConversionUtils.ConvertToBytes(fetchedMessage.BodyParts[0].BodyPart);
-
-			//    }
-			//}
 		}
 
 		#region ITunnel Members
