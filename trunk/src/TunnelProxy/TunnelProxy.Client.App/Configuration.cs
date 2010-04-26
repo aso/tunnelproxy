@@ -87,22 +87,29 @@ namespace TunnelProxy.Client.App
 
 		private void StartTunnel(object param)
 		{
-			string tunnelType = param as string;
-			TunnelLogic tunnelLogic = new TunnelLogic(this);
-			ITunnel tunnel;
-			if (tunnelType == "email")
-				tunnel = new EmailTunnel(txtSmtpServer.Text, Convert.ToInt32(txtSmtpPort.Text),
-					txtPopServer.Text, Convert.ToInt32(txtPopPort.Text), txtEmailServerEmailAddress.Text,
-					txtEmailClientEmailAddress.Text, txtEmailClientUserName.Text,
-					txtEmailClientPassword.Text);
-			else
-				tunnel = new HttpTunnel(new Uri(txtUrl.Text), "POST");
-			
+			try
+			{
+				string tunnelType = param as string;
+				TunnelLogic tunnelLogic = new TunnelLogic(this);
+				ITunnel tunnel;
+				if (tunnelType == "email")
+					tunnel = new EmailTunnel(txtSmtpServer.Text, Convert.ToInt32(txtSmtpPort.Text),
+						txtPopServer.Text, Convert.ToInt32(txtPopPort.Text), txtEmailServerEmailAddress.Text,
+						txtEmailClientEmailAddress.Text, txtEmailClientUserName.Text,
+						txtEmailClientPassword.Text);
+				else
+					tunnel = new HttpTunnel(new Uri(txtUrl.Text), "POST");
 
-			if (chkEncryptData.Checked)
-				tunnel = new TunnelDataEncrypter(tunnel, "testing");
 
-			tunnelLogic.StartTunnel(tunnel, txtLocalIPAddr.Text, Convert.ToInt32(txtLocalPort.Text));
+				if (chkEncryptData.Checked)
+					tunnel = new TunnelDataEncrypter(tunnel, "testing");
+
+				tunnelLogic.StartTunnel(tunnel, txtLocalIPAddr.Text, Convert.ToInt32(txtLocalPort.Text));
+			}
+			catch (Exception ex)
+			{
+				WriteLine(ex.Message + " " + ex.StackTrace);
+			}
 		}
 
 		#region IMessageWriter Members
@@ -115,7 +122,11 @@ namespace TunnelProxy.Client.App
 			if (lstMessages.InvokeRequired)
 				lstMessages.Invoke(new WriteLineDelegate(WriteLine), value);
 			else
+			{
 				lstMessages.Items.Add(value);
+				lstMessages.SetSelected(lstMessages.Items.Count - 1, true);
+				lstMessages.SetSelected(lstMessages.Items.Count - 1, false);
+			}
 		}
 
 		public void WriteLine(string format, object arg0)

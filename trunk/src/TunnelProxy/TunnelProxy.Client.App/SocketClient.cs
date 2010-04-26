@@ -74,15 +74,22 @@ namespace TunnelProxy.Client.App
 
         void Tunnel_DataReceived(object sender, DataReceivedEventArgs e)
 		{
-			byte[] data = e.Data;
+			try
+			{
+				byte[] data = e.Data;
 
-            UInt16 connNum = BitConverter.ToUInt16(data, (int)HeaderIndex.ConnectionNumber);
+				UInt16 connNum = BitConverter.ToUInt16(data, (int)HeaderIndex.ConnectionNumber);
 
-            if (connNum == _socketId)
-            {
-                _messageWriter.WriteLine("<---Recvd {0} bytes from server", data.Length);
-                _networkStream.Write(data, (int)HeaderIndex.HeaderSize, data.Length - (int)HeaderIndex.HeaderSize);
-            }
+				if (connNum == _socketId)
+				{
+					_messageWriter.WriteLine("<---Recvd {0} bytes from server", data.Length);
+					_networkStream.Write(data, (int)HeaderIndex.HeaderSize, data.Length - (int)HeaderIndex.HeaderSize);
+				}
+			}
+			catch (Exception ex)
+			{
+				_messageWriter.WriteLine(ex.Message + " " + ex.StackTrace);
+			}
 		}
 
         //Member Objects

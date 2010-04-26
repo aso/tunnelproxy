@@ -64,19 +64,11 @@
 			this.txtEmailClientPassword = new System.Windows.Forms.TextBox();
 			this.txtEmailClientUserName = new System.Windows.Forms.TextBox();
 			this.label6 = new System.Windows.Forms.Label();
-			this.panel1 = new System.Windows.Forms.Panel();
-			this.label12 = new System.Windows.Forms.Label();
-			this.cbNetworkAdapter = new System.Windows.Forms.ComboBox();
-			this.label13 = new System.Windows.Forms.Label();
-			this.maskedTextBox1 = new System.Windows.Forms.MaskedTextBox();
-			this.label14 = new System.Windows.Forms.Label();
-			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.label15 = new System.Windows.Forms.Label();
 			this.chkEncryptData = new System.Windows.Forms.CheckBox();
 			this.pnlTwitter.SuspendLayout();
 			this.pnlHtml.SuspendLayout();
 			this.pnlEmail.SuspendLayout();
-			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -184,7 +176,7 @@
 			this.pnlTwitter.Controls.Add(this.txtTwitterClientPassword);
 			this.pnlTwitter.Controls.Add(this.txtTwitterClientUserName);
 			this.pnlTwitter.Controls.Add(this.lblTwitterServerUserName);
-			this.pnlTwitter.Location = new System.Drawing.Point(260, 66);
+			this.pnlTwitter.Location = new System.Drawing.Point(4, 66);
 			this.pnlTwitter.Name = "pnlTwitter";
 			this.pnlTwitter.Size = new System.Drawing.Size(270, 87);
 			this.pnlTwitter.TabIndex = 18;
@@ -193,7 +185,7 @@
 			// 
 			this.pnlHtml.Controls.Add(this.txtUrl);
 			this.pnlHtml.Controls.Add(this.lblUrl);
-			this.pnlHtml.Location = new System.Drawing.Point(260, 66);
+			this.pnlHtml.Location = new System.Drawing.Point(4, 66);
 			this.pnlHtml.Name = "pnlHtml";
 			this.pnlHtml.Size = new System.Drawing.Size(282, 43);
 			this.pnlHtml.TabIndex = 19;
@@ -202,16 +194,17 @@
 			// 
 			this.lstMessages.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.lstMessages.FormattingEnabled = true;
+			this.lstMessages.HorizontalScrollbar = true;
 			this.lstMessages.Location = new System.Drawing.Point(0, 294);
 			this.lstMessages.Name = "lstMessages";
-			this.lstMessages.Size = new System.Drawing.Size(614, 186);
+			this.lstMessages.Size = new System.Drawing.Size(566, 186);
 			this.lstMessages.TabIndex = 20;
 			this.lstMessages.SelectedIndexChanged += new System.EventHandler(this.lstMessages_SelectedIndexChanged);
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(8, 54);
+			this.label2.Location = new System.Drawing.Point(314, 54);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(90, 13);
 			this.label2.TabIndex = 21;
@@ -220,7 +213,7 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(8, 80);
+			this.label3.Location = new System.Drawing.Point(314, 80);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(29, 13);
 			this.label3.TabIndex = 22;
@@ -228,7 +221,7 @@
 			// 
 			// txtLocalPort
 			// 
-			this.txtLocalPort.Location = new System.Drawing.Point(120, 77);
+			this.txtLocalPort.Location = new System.Drawing.Point(426, 77);
 			this.txtLocalPort.Name = "txtLocalPort";
 			this.txtLocalPort.Size = new System.Drawing.Size(106, 20);
 			this.txtLocalPort.TabIndex = 23;
@@ -236,7 +229,7 @@
 			// 
 			// txtLocalIPAddr
 			// 
-			this.txtLocalIPAddr.Location = new System.Drawing.Point(120, 50);
+			this.txtLocalIPAddr.Location = new System.Drawing.Point(426, 50);
 			this.txtLocalIPAddr.Mask = "000.000.000.000";
 			this.txtLocalIPAddr.Name = "txtLocalIPAddr";
 			this.txtLocalIPAddr.Size = new System.Drawing.Size(100, 20);
@@ -261,7 +254,7 @@
 			this.pnlEmail.Controls.Add(this.txtEmailClientPassword);
 			this.pnlEmail.Controls.Add(this.txtEmailClientUserName);
 			this.pnlEmail.Controls.Add(this.label6);
-			this.pnlEmail.Location = new System.Drawing.Point(260, 66);
+			this.pnlEmail.Location = new System.Drawing.Point(4, 66);
 			this.pnlEmail.Name = "pnlEmail";
 			this.pnlEmail.Size = new System.Drawing.Size(270, 211);
 			this.pnlEmail.TabIndex = 26;
@@ -403,75 +396,10 @@
 			this.label6.TabIndex = 17;
 			this.label6.Text = "Client Email Address:";
 			// 
-			// panel1
-			// 
-			this.panel1.Controls.Add(this.label14);
-			this.panel1.Controls.Add(this.textBox1);
-			this.panel1.Controls.Add(this.maskedTextBox1);
-			this.panel1.Controls.Add(this.label13);
-			this.panel1.Controls.Add(this.label12);
-			this.panel1.Controls.Add(this.cbNetworkAdapter);
-			this.panel1.Location = new System.Drawing.Point(4, 126);
-			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(254, 100);
-			this.panel1.TabIndex = 27;
-			// 
-			// label12
-			// 
-			this.label12.AutoSize = true;
-			this.label12.Location = new System.Drawing.Point(4, 12);
-			this.label12.Name = "label12";
-			this.label12.Size = new System.Drawing.Size(90, 13);
-			this.label12.TabIndex = 22;
-			this.label12.Text = "Network Adapter:";
-			// 
-			// cbNetworkAdapter
-			// 
-			this.cbNetworkAdapter.FormattingEnabled = true;
-			this.cbNetworkAdapter.Location = new System.Drawing.Point(116, 9);
-			this.cbNetworkAdapter.Name = "cbNetworkAdapter";
-			this.cbNetworkAdapter.Size = new System.Drawing.Size(121, 21);
-			this.cbNetworkAdapter.TabIndex = 0;
-			// 
-			// label13
-			// 
-			this.label13.AutoSize = true;
-			this.label13.Location = new System.Drawing.Point(4, 36);
-			this.label13.Name = "label13";
-			this.label13.Size = new System.Drawing.Size(95, 13);
-			this.label13.TabIndex = 23;
-			this.label13.Text = "Server IP Address:";
-			// 
-			// maskedTextBox1
-			// 
-			this.maskedTextBox1.Location = new System.Drawing.Point(116, 33);
-			this.maskedTextBox1.Mask = "000.000.000.000";
-			this.maskedTextBox1.Name = "maskedTextBox1";
-			this.maskedTextBox1.Size = new System.Drawing.Size(100, 20);
-			this.maskedTextBox1.TabIndex = 26;
-			this.maskedTextBox1.Text = "127000000001";
-			// 
-			// label14
-			// 
-			this.label14.AutoSize = true;
-			this.label14.Location = new System.Drawing.Point(4, 60);
-			this.label14.Name = "label14";
-			this.label14.Size = new System.Drawing.Size(32, 13);
-			this.label14.TabIndex = 27;
-			this.label14.Text = "Filter:";
-			// 
-			// textBox1
-			// 
-			this.textBox1.Location = new System.Drawing.Point(116, 57);
-			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(106, 20);
-			this.textBox1.TabIndex = 28;
-			this.textBox1.Text = "13000";
-			// 
 			// label15
 			// 
 			this.label15.AutoSize = true;
-			this.label15.Location = new System.Drawing.Point(264, 54);
+			this.label15.Location = new System.Drawing.Point(8, 54);
 			this.label15.Name = "label15";
 			this.label15.Size = new System.Drawing.Size(72, 13);
 			this.label15.TabIndex = 28;
@@ -480,7 +408,7 @@
 			// chkEncryptData
 			// 
 			this.chkEncryptData.AutoSize = true;
-			this.chkEncryptData.Location = new System.Drawing.Point(376, 49);
+			this.chkEncryptData.Location = new System.Drawing.Point(120, 49);
 			this.chkEncryptData.Name = "chkEncryptData";
 			this.chkEncryptData.Size = new System.Drawing.Size(15, 14);
 			this.chkEncryptData.TabIndex = 29;
@@ -490,10 +418,9 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(614, 480);
+			this.ClientSize = new System.Drawing.Size(566, 480);
 			this.Controls.Add(this.chkEncryptData);
 			this.Controls.Add(this.label15);
-			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.pnlEmail);
 			this.Controls.Add(this.txtLocalIPAddr);
 			this.Controls.Add(this.label2);
@@ -515,8 +442,6 @@
 			this.pnlHtml.PerformLayout();
 			this.pnlEmail.ResumeLayout(false);
 			this.pnlEmail.PerformLayout();
-			this.panel1.ResumeLayout(false);
-			this.panel1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -559,13 +484,6 @@
 		private System.Windows.Forms.Label label10;
 		private System.Windows.Forms.Label label11;
 		private System.Windows.Forms.TextBox txtPopPort;
-		private System.Windows.Forms.Panel panel1;
-		private System.Windows.Forms.Label label12;
-		private System.Windows.Forms.ComboBox cbNetworkAdapter;
-		private System.Windows.Forms.Label label14;
-		private System.Windows.Forms.TextBox textBox1;
-		private System.Windows.Forms.MaskedTextBox maskedTextBox1;
-		private System.Windows.Forms.Label label13;
 		private System.Windows.Forms.Label label15;
 		private System.Windows.Forms.CheckBox chkEncryptData;
 	}
