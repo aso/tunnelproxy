@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual C# Express 2008
+# Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TunnelProxy.Client.App", "TunnelProxy.Client.App\TunnelProxy.Client.App.csproj", "{6F4208B9-AE5A-4D10-B6EA-2B92680BF949}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TunnelProxy.Server.App", "TunnelProxy.Server.App\TunnelProxy.Server.App.csproj", "{B28E21B5-4835-431A-9278-F09E2AB185DB}"
@@ -14,6 +14,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftEther.Client.App", "SoftEther.Client.App\SoftEther.Client.App.csproj", "{E2EC83C4-D7B9-47AE-96D9-CD90CC6C8517}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftEther.Server.App", "SoftEther.Server.App\SoftEther.Server.App.csproj", "{B3389B8E-1DE2-4DCB-81BE-2B4BF31BDC30}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftEther.Client.GUI.App", "SoftEther.Client.GUI.App\SoftEther.Client.GUI.App.csproj", "{397C5BFB-371F-4096-B938-7B866167CFB9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftEther.Server.GUI.App", "SoftEther.Server.GUI.App\SoftEther.Server.GUI.App.csproj", "{30CC77E2-57A1-4D5D-B028-9249726482E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +53,14 @@ Global
 		{B3389B8E-1DE2-4DCB-81BE-2B4BF31BDC30}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3389B8E-1DE2-4DCB-81BE-2B4BF31BDC30}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3389B8E-1DE2-4DCB-81BE-2B4BF31BDC30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{397C5BFB-371F-4096-B938-7B866167CFB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{397C5BFB-371F-4096-B938-7B866167CFB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{397C5BFB-371F-4096-B938-7B866167CFB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{397C5BFB-371F-4096-B938-7B866167CFB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30CC77E2-57A1-4D5D-B028-9249726482E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30CC77E2-57A1-4D5D-B028-9249726482E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30CC77E2-57A1-4D5D-B028-9249726482E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30CC77E2-57A1-4D5D-B028-9249726482E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
